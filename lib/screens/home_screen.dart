@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onde_parei/tabs/dashboard_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,7 +12,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late final TabController _tabController;
   int _activeMenu = 0;
   String _title = "Onde Parei";
-  Widget _childContent = Column();
+  Widget _childContent = DashboardTab();
 
   void _changeMenu(int value) {
     setState(() {
@@ -20,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
       switch (value) {
         case 0:
-          _childContent = Column();
+          _childContent = DashboardTab();
           _title = 'Onde Parei';
           break;
         default:
