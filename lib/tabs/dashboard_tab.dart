@@ -1,12 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:onde_parei/components/list_component.dart';
 import 'package:onde_parei/models/work.dart';
+import 'package:onde_parei/screens/add_or_update_work_screen.dart';
 
-class DashboardTab extends StatelessWidget {
-  DashboardTab({super.key, required this.listWorks});
+class DashboardTab extends StatefulWidget {
   final List<Work> listWorks;
 
+  const DashboardTab({super.key, required this.listWorks});
+
+  @override
+  State<DashboardTab> createState() => _DashboardTabState();
+}
+
+class _DashboardTabState extends State<DashboardTab> {
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +47,13 @@ class DashboardTab extends StatelessWidget {
           ),
           style: TextStyle(),
         ),
-        ListComponent(screen: "dashboard", listWorks: listWorks),
+        ListComponent(screen: "dashboard", listWorks: widget.listWorks),
         ElevatedButton(
-          onPressed: () {},
-          child: Row(children: [Icon(Icons.add), Text("Adicionar")]),
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddOrUpdateWorkScreen()),
+          ),
+          child: Row(children: [Icon(Icons.add), Text("Nova Obra")]),
         ),
       ],
     );
