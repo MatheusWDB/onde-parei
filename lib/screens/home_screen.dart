@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onde_parei/screens/settings_screen.dart';
 import 'package:onde_parei/tabs/dashboard_tab.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late final TabController _tabController;
   int _activeMenu = 0;
-  String _title = "Onde Parei";
+  String _title = "Onde Parei?";
   Widget _childContent = DashboardTab();
 
   void _changeMenu(int value) {
@@ -22,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       switch (value) {
         case 0:
           _childContent = DashboardTab();
-          _title = 'Onde Parei';
+          _title = 'Onde Parei?';
           break;
         default:
           _childContent = Column();
@@ -53,11 +54,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               elevation: 2.0,
               //shadowColor: Colors.black,
             ),
-            onPressed: () {
-              int value = _activeMenu == 0 ? 1 : 0;
-              _changeMenu(value);
-            },
-            icon: Icon(_activeMenu == 0 ? Icons.archive : Icons.grid_view),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SettingsScreen()),
+            ),
+            icon: Icon(Icons.settings),
           ),
         ],
         title: Padding(
@@ -84,22 +85,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ],
         ),
       ),
-      floatingActionButton: _activeMenu == 0
-          ? Container(
-              alignment: Alignment.bottomRight,
-              width: 45.0,
-              height: 45.0,
-              child: FittedBox(
-                child: FloatingActionButton(
-                  //foregroundColor: Colors.white,
-                  shape: CircleBorder(),
-                  //backgroundColor: primaryColor,
-                  onPressed: () {},
-                  child: const Icon(Icons.add, fontWeight: FontWeight.bold),
-                ),
-              ),
-            )
-          : null,
       body: SafeArea(
         child: Container(
           padding: EdgeInsets.all(18.0),

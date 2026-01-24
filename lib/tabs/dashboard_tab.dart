@@ -87,6 +87,10 @@ class DashboardTab extends StatelessWidget {
                 ListComponent(mock: ondePareiMock[index]),
           ),
         ),
+        ElevatedButton(
+          onPressed: () {},
+          child: Row(children: [Icon(Icons.add), Text("Adicionar")]),
+        ),
       ],
     );
   }
