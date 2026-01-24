@@ -14,10 +14,12 @@ class DashboardTab extends StatefulWidget {
 
 class _DashboardTabState extends State<DashboardTab> {
   final TextEditingController _searchController = TextEditingController();
+  late List<Work> listView;
 
   @override
   void initState() {
     super.initState();
+    listView = [...widget.listWorks];
   }
 
   @override
@@ -46,8 +48,18 @@ class _DashboardTabState extends State<DashboardTab> {
             hintText: "Pesquisar obra...",
           ),
           style: TextStyle(),
+          onChanged: (value) {
+            setState(() {
+              listView = [
+                ...widget.listWorks.where(
+                  (work) =>
+                      work.title.toLowerCase().contains(value.toLowerCase()),
+                ),
+              ];
+            });
+          },
         ),
-        ListComponent(screen: "dashboard", listWorks: widget.listWorks),
+        ListComponent(screen: "dashboard", listWorks: listView),
         ElevatedButton(
           onPressed: () => Navigator.push(
             context,
