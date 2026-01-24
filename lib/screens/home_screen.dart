@@ -1,6 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:onde_parei/enums/type_enum.dart';
+import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/screens/settings_screen.dart';
+import 'package:onde_parei/tabs/archived_tab.dart';
 import 'package:onde_parei/tabs/dashboard_tab.dart';
+
+final List<Work> ondePareiMock = [
+  Work(
+    id: 1,
+    title: 'One Piece',
+    type: TypeEnum.anime,
+    season: 1,
+    episode: 1080,
+  ),
+  Work(
+    id: 2,
+    title: 'O Senhor dos Anéis',
+    type: TypeEnum.book,
+    chapter: 12,
+    page: 245,
+  ),
+  Work(id: 3, title: 'The Bear', type: TypeEnum.series, season: 2, episode: 4),
+  Work(id: 4, title: 'Batman: Ano Um', type: TypeEnum.hq, chapter: 2, page: 48),
+  Work(id: 5, title: 'Berserk', type: TypeEnum.manga, chapter: 372, page: 12),
+  Work(
+    id: 6,
+    title: 'It: Welcome to Derry',
+    type: TypeEnum.series,
+    season: 1,
+    episode: 8,
+    isFinished: true,
+  ),
+];
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late final TabController _tabController;
   int _activeMenu = 0;
   String _title = "Onde Parei?";
-  Widget _childContent = DashboardTab();
+  Widget _childContent = DashboardTab(ondePareiMock: ondePareiMock);
 
   void _changeMenu(int value) {
     setState(() {
@@ -22,11 +53,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
       switch (value) {
         case 0:
-          _childContent = DashboardTab();
+          _childContent = DashboardTab(ondePareiMock: ondePareiMock);
           _title = 'Onde Parei?';
           break;
         default:
-          _childContent = Column();
+          _childContent = ArchivedTab(ondePareiMock: ondePareiMock);
           _title = 'Arquivados';
           break;
       }
