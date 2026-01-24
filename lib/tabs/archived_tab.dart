@@ -4,9 +4,9 @@ import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/screens/home_screen.dart';
 
 class ArchivedTab extends StatefulWidget {
-  const ArchivedTab({super.key, required this.ondePareiMock});
+  const ArchivedTab({super.key, required this.listWorks});
 
-  final List<Work> ondePareiMock;
+  final List<Work> listWorks;
 
   @override
   State<ArchivedTab> createState() => _ArchivedTabState();
@@ -15,13 +15,9 @@ class ArchivedTab extends StatefulWidget {
 class _ArchivedTabState extends State<ArchivedTab> {
   @override
   Widget build(BuildContext context) {
-    List<Work>? concluidos;
-    if (ondePareiMock.any((e) => e.isFinished == true)) {
-      concluidos = ondePareiMock.where((e) => e.isFinished == true).toList();
-    }
+    bool anyCompletedWorks = listWorks.any((work) => work.isFinished == true);
 
-    return ondePareiMock.isEmpty ||
-            !ondePareiMock.any((e) => e.isFinished == true)
+    return listWorks.isEmpty || !anyCompletedWorks
         ? Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -35,15 +31,7 @@ class _ArchivedTabState extends State<ArchivedTab> {
             ),
           )
         : Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: concluidos!.length,
-                  itemBuilder: (context, index) =>
-                      ListComponent(mock: concluidos![index]),
-                ),
-              ),
-            ],
+            children: [ListComponent(screen: "archived", listWorks: listWorks)],
           );
   }
 }

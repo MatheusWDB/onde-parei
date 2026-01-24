@@ -5,7 +5,7 @@ import 'package:onde_parei/screens/settings_screen.dart';
 import 'package:onde_parei/tabs/archived_tab.dart';
 import 'package:onde_parei/tabs/dashboard_tab.dart';
 
-final List<Work> ondePareiMock = [
+final List<Work> listWorks = [
   Work(
     id: 1,
     title: 'One Piece',
@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late final TabController _tabController;
   int _activeMenu = 0;
   String _title = "Onde Parei?";
-  Widget _childContent = DashboardTab(ondePareiMock: ondePareiMock);
+  Widget _childContent = DashboardTab(listWorks: listWorks);
 
   void _changeMenu(int value) {
     setState(() {
@@ -53,11 +53,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
       switch (value) {
         case 0:
-          _childContent = DashboardTab(ondePareiMock: ondePareiMock);
+          _childContent = DashboardTab(listWorks: listWorks);
           _title = 'Onde Parei?';
           break;
         default:
-          _childContent = ArchivedTab(ondePareiMock: ondePareiMock);
+          _childContent = ArchivedTab(listWorks: listWorks);
           _title = 'Arquivados';
           break;
       }

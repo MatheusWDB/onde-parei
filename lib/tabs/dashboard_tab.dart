@@ -1,61 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:onde_parei/components/card_component.dart';
 import 'package:onde_parei/components/list_component.dart';
-
-final List<Map<String, dynamic>> ondePareiMock = [
-  {
-    'id': 1,
-    'titulo': 'One Piece',
-    'tipo': 'Anime',
-    'temporada': 1,
-    'episodio': 1080,
-    'capitulo': 0,
-    'pagina': 0,
-    'concluido': false,
-  },
-  {
-    'id': 2,
-    'titulo': 'O Senhor dos Anéis',
-    'tipo': 'Livro',
-    'temporada': 0,
-    'episodio': 0,
-    'capitulo': 12,
-    'pagina': 245,
-    'concluido': false,
-  },
-  {
-    'id': 3,
-    'titulo': 'The Bear',
-    'tipo': 'Série',
-    'temporada': 2,
-    'episodio': 4,
-    'capitulo': 0,
-    'pagina': 0,
-    'concluido': false,
-  },
-  {
-    'id': 4,
-    'titulo': 'Batman: Ano Um',
-    'tipo': 'HQ',
-    'temporada': 0,
-    'episodio': 0,
-    'capitulo': 2,
-    'pagina': 48,
-    'concluido': false,
-  },
-  {
-    'id': 5,
-    'titulo': 'Berserk',
-    'tipo': 'Mangá',
-    'temporada': 0,
-    'episodio': 0,
-    'capitulo': 372,
-    'pagina': 12,
-    'concluido': false,
-  },
-];
+import 'package:onde_parei/models/work.dart';
 
 class DashboardTab extends StatelessWidget {
-  DashboardTab({super.key});
+  DashboardTab({super.key, required this.listWorks});
+  final List<Work> listWorks;
 
   final TextEditingController _searchController = TextEditingController();
 
@@ -80,13 +30,7 @@ class DashboardTab extends StatelessWidget {
           ),
           style: TextStyle(),
         ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: ondePareiMock.length,
-            itemBuilder: (context, index) =>
-                ListComponent(mock: ondePareiMock[index]),
-          ),
-        ),
+        ListComponent(screen: "dashboard", listWorks: listWorks),
         ElevatedButton(
           onPressed: () {},
           child: Row(children: [Icon(Icons.add), Text("Adicionar")]),
