@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:onde_parei/components/card_component.dart';
 import 'package:onde_parei/components/list_component.dart';
 import 'package:onde_parei/models/work.dart';
 
