@@ -14,11 +14,32 @@ class AddOrUpdateWorkScreen extends StatefulWidget {
 class _AddOrUpdateWorkScreenState extends State<AddOrUpdateWorkScreen> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
-  final _typeController = TextEditingController(
-    text: TypeEnum.series.displayName,
-  );
   final _seasonOrChapterController = TextEditingController();
-  final _episodeOrEpisodeController = TextEditingController();
+  final _episodeOrPageController = TextEditingController();
+
+  TypeEnum _selectedType = TypeEnum.series;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.work != null) {
+      _titleController.text = widget.work!.title;
+      _seasonOrChapterController.text = widget.work!.isReadingType
+          ? widget.work!.chapter.toString()
+          : widget.work!.season.toString();
+      _episodeOrPageController.text = widget.work!.isReadingType
+          ? widget.work!.page.toString()
+          : widget.work!.episode.toString();
+    }
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _seasonOrChapterController.dispose();
+    _episodeOrPageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +80,10 @@ class _AddOrUpdateWorkScreenState extends State<AddOrUpdateWorkScreen> {
                       children: [
                         Text('Categoria'),
                         DropdownMenu<TypeEnum>(
-                          controller: _typeController,
-                          initialSelection: TypeEnum.series,
+                          initialSelection: _selectedType,
                           onSelected: (value) {
                             setState(() {
-                              _typeController.text = value!.displayName;
+                              _selectedType = value!;
                             });
                           },
                           dropdownMenuEntries: TypeEnum.values
@@ -83,14 +103,7 @@ class _AddOrUpdateWorkScreenState extends State<AddOrUpdateWorkScreen> {
                           child: Column(
                             children: [
                               Text(
-                                (_typeController.text ==
-                                            TypeEnum.anime.displayName ||
-                                        _typeController.text ==
-                                            TypeEnum.novel.displayName ||
-                                        _typeController.text ==
-                                            TypeEnum.series.displayName)
-                                    ? 'Temporada'
-                                    : 'Capítulo',
+                                _selectedType.isVideo ? 'Temporada' : 'Capítulo',
                               ),
                               TextFormField(
                                 controller: _seasonOrChapterController,
@@ -115,18 +128,9 @@ class _AddOrUpdateWorkScreenState extends State<AddOrUpdateWorkScreen> {
                         Expanded(
                           child: Column(
                             children: [
-                              Text(
-                                (_typeController.text ==
-                                            TypeEnum.anime.displayName ||
-                                        _typeController.text ==
-                                            TypeEnum.novel.displayName ||
-                                        _typeController.text ==
-                                            TypeEnum.series.displayName)
-                                    ? 'Episódio'
-                                    : 'Página',
-                              ),
+                              Text(_selectedType.isVideo ? 'Episódio' : 'Página'),
                               TextFormField(
-                                controller: _episodeOrEpisodeController,
+                                controller: _episodeOrPageController,
                                 decoration: InputDecoration(
                                   hintText: widget.work == null
                                       ? '0'

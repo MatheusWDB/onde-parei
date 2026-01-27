@@ -27,12 +27,43 @@ class Work {
     this.updatedAt,
   });
 
-  bool get isReadingType => [
-    TypeEnum.book,
-    TypeEnum.manga,
-    TypeEnum.hq,
-    TypeEnum.manhwa,
-  ].contains(type);
+  bool get isReadingType => type.isReading;
+
+  Work increment() {
+    if (isReadingType) {
+      if (type == TypeEnum.manhwa) {
+        return copyWith(chapter: chapter + 0.5);
+      }
+      if (type == TypeEnum.manga || type == TypeEnum.hq) {
+        return copyWith(chapter: chapter + 1.0);
+      }
+      return copyWith(page: page + 1);
+    }
+    return copyWith(episode: episode + 1);
+  }
+
+  Work decrement() {
+    if (isReadingType) {
+      if (type == TypeEnum.manhwa) {
+        return copyWith(chapter: _clampDouble(chapter - 0.5));
+      }
+      if (type == TypeEnum.manga || type == TypeEnum.hq) {
+        return copyWith(chapter: _clampDouble(chapter - 1.0));
+      }
+      return copyWith(page: _clampInt(page - 1));
+    }
+    return copyWith(episode: _clampInt(episode - 1));
+  }
+
+  String get progressLabel {
+    if (isReadingType) {
+      final chapterLabel = type == TypeEnum.manhwa
+          ? chapter.toStringAsFixed(1)
+          : chapter.toStringAsFixed(0);
+      return "Cap. $chapterLabel • Pág. $page";
+    }
+    return "Temp. $season • Ep. $episode";
+  }
 
   Map<String, dynamic> toMap() {
     final map = {
@@ -44,7 +75,7 @@ class Work {
       'chapter': chapter,
       'page': page,
       'isFinished': isFinished ? 1 : 0,
-      'createdAt': createdAt?.toIso8601String(),
+      'createdAt': (createdAt ?? DateTime.now()).toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
     };
 
@@ -109,6 +140,9 @@ class Work {
       updatedAt: updatedAt ?? DateTime.now(),
     );
   }
+
+  int _clampInt(int value) => value < 0 ? 0 : value;
+  double _clampDouble(double value) => value < 0 ? 0 : value;
 
   @override
   String toString() {

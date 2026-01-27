@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onde_parei/components/list_component.dart';
+import 'package:onde_parei/enums/list_mode_enum.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/screens/add_or_update_work_screen.dart';
 
@@ -59,7 +60,23 @@ class _DashboardTabState extends State<DashboardTab> {
             });
           },
         ),
-        ListComponent(screen: "dashboard", listWorks: listView),
+        Expanded(
+          child: ListComponent(
+            mode: ListMode.dashboard,
+            listWorks: listView,
+            onUpdate: (updatedWork) {
+              setState(() {
+                final index = widget.listWorks.indexWhere(
+                  (w) => w.id == updatedWork.id,
+                );
+                if (index != -1) {
+                  widget.listWorks[index] = updatedWork;
+                  listView = [...widget.listWorks];
+                }
+              });
+            },
+          ),
+        ),
         ElevatedButton(
           onPressed: () => Navigator.push(
             context,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onde_parei/components/list_component.dart';
+import 'package:onde_parei/enums/list_mode_enum.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/screens/home_screen.dart';
 
@@ -31,7 +32,24 @@ class _ArchivedTabState extends State<ArchivedTab> {
             ),
           )
         : Column(
-            children: [ListComponent(screen: "archived", listWorks: listWorks)],
+            children: [
+              Expanded(
+                child: ListComponent(
+                  mode: ListMode.archived,
+                  listWorks: listWorks,
+                  onUpdate: (updatedWork) {
+                    setState(() {
+                      final index = widget.listWorks.indexWhere(
+                        (w) => w.id == updatedWork.id,
+                      );
+                      if (index != -1) {
+                        widget.listWorks[index] = updatedWork;
+                      }
+                    });
+                  },
+                ),
+              ),
+            ],
           );
   }
 }
