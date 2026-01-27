@@ -1,1 +1,0 @@
-enum ListMode { dashboard, archived }
