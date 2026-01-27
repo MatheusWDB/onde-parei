@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:onde_parei/enums/type_enum.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/screens/add_or_update_work_screen.dart';
 
