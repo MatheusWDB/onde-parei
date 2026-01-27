@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:onde_parei/components/list_component.dart';
-import 'package:onde_parei/enums/list_mode_enum.dart';
 import 'package:onde_parei/models/work.dart';
-import 'package:onde_parei/screens/home_screen.dart';
+import 'package:onde_parei/providers/work_list_provider.dart';
 
-class ArchivedTab extends StatefulWidget {
-  const ArchivedTab({super.key, required this.listWorks});
-
-  final List<Work> listWorks;
+class ArchivedTab extends ConsumerWidget {
+  const ArchivedTab({super.key});
 
   @override
-  State<ArchivedTab> createState() => _ArchivedTabState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final List<Work> works = ref.watch(workListProvider);
 
-class _ArchivedTabState extends State<ArchivedTab> {
-  @override
-  Widget build(BuildContext context) {
-    bool anyCompletedWorks = listWorks.any((work) => work.isFinished == true);
+    final List<Work> completedWorks = works
+        .where((work) => work.isFinished)
+        .toList();
 
-    return listWorks.isEmpty || !anyCompletedWorks
+    return completedWorks.isEmpty
         ? Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -33,22 +30,7 @@ class _ArchivedTabState extends State<ArchivedTab> {
           )
         : Column(
             children: [
-              Expanded(
-                child: ListComponent(
-                  mode: ListMode.archived,
-                  listWorks: listWorks,
-                  onUpdate: (updatedWork) {
-                    setState(() {
-                      final index = widget.listWorks.indexWhere(
-                        (w) => w.id == updatedWork.id,
-                      );
-                      if (index != -1) {
-                        widget.listWorks[index] = updatedWork;
-                      }
-                    });
-                  },
-                ),
-              ),
+              Expanded(child: ListComponent(listWorks: completedWorks)),
             ],
           );
   }

@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:onde_parei/models/work.dart';
+import 'package:onde_parei/providers/work_list_provider.dart';
 import 'package:onde_parei/screens/add_or_update_work_screen.dart';
 
-class CardComponent extends StatelessWidget {
+class CardComponent extends ConsumerWidget {
   final Work work;
-  final ValueChanged<Work> onUpdate;
 
-  const CardComponent({super.key, required this.work, required this.onUpdate});
+  const CardComponent({super.key, required this.work});
 
-  void _increase() => onUpdate(work.increment());
-  void _decrement() => onUpdate(work.decrement());
+  void _increase(WidgetRef ref) {
+    ref.read(workListProvider.notifier).update(work.increment());
+  }
+
+  void _decrement(WidgetRef ref) {
+    ref.read(workListProvider.notifier).update(work.decrement());
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     IconData? icon;
 
     if (work.isReadingType) {
@@ -60,7 +66,7 @@ class CardComponent extends StatelessWidget {
                               //foregroundColor: Colors.white,
                               shape: CircleBorder(),
                               //backgroundColor: primaryColor,
-                              onPressed: work.isFinished ? null : _decrement,
+                              onPressed: () => _decrement(ref),
                               child: const Icon(
                                 Icons.remove,
                                 fontWeight: FontWeight.bold,
@@ -77,7 +83,7 @@ class CardComponent extends StatelessWidget {
                               //foregroundColor: Colors.white,
                               shape: CircleBorder(),
                               //backgroundColor: primaryColor,
-                              onPressed: work.isFinished ? null : _increase,
+                              onPressed: () => _increase(ref),
                               child: const Icon(
                                 Icons.add,
                                 fontWeight: FontWeight.bold,

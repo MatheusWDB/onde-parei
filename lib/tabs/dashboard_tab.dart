@@ -1,90 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:onde_parei/components/list_component.dart';
-import 'package:onde_parei/enums/list_mode_enum.dart';
 import 'package:onde_parei/models/work.dart';
+import 'package:onde_parei/providers/work_list_provider.dart';
 import 'package:onde_parei/screens/add_or_update_work_screen.dart';
 
-class DashboardTab extends StatefulWidget {
-  final List<Work> listWorks;
-
-  const DashboardTab({super.key, required this.listWorks});
+class DashboardTab extends ConsumerWidget {
+  const DashboardTab({super.key});
 
   @override
-  State<DashboardTab> createState() => _DashboardTabState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final List<Work> works = ref.watch(workListProvider);
 
-class _DashboardTabState extends State<DashboardTab> {
-  final TextEditingController _searchController = TextEditingController();
-  late List<Work> listView;
+    final List<Work> activeWorks = works
+        .where((work) => !work.isFinished)
+        .toList();
 
-  @override
-  void initState() {
-    super.initState();
-    listView = [...widget.listWorks];
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      spacing: 10.0,
-      children: [
-        TextField(
-          controller: _searchController,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-            ),
-            contentPadding: EdgeInsets.symmetric(
-              vertical: 8.0,
-              horizontal: 10.0,
-            ),
-            prefixIcon: Icon(Icons.search),
-            isDense: true,
-            hintText: "Pesquisar obra...",
-          ),
-          style: TextStyle(),
-          onChanged: (value) {
-            setState(() {
-              listView = [
-                ...widget.listWorks.where(
-                  (work) =>
-                      work.title.toLowerCase().contains(value.toLowerCase()),
+    return activeWorks.isEmpty
+        ? Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.menu_book, size: 45.0),
+                Text(
+                  'Nenhum item salvo.',
+                  style: TextStyle(fontStyle: FontStyle.italic),
                 ),
-              ];
-            });
-          },
-        ),
-        Expanded(
-          child: ListComponent(
-            mode: ListMode.dashboard,
-            listWorks: listView,
-            onUpdate: (updatedWork) {
-              setState(() {
-                final index = widget.listWorks.indexWhere(
-                  (w) => w.id == updatedWork.id,
-                );
-                if (index != -1) {
-                  widget.listWorks[index] = updatedWork;
-                  listView = [...widget.listWorks];
-                }
-              });
-            },
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddOrUpdateWorkScreen()),
-          ),
-          child: Row(children: [Icon(Icons.add), Text("Nova Obra")]),
-        ),
-      ],
-    );
+              ],
+            ),
+          )
+        : Column(
+            spacing: 10.0,
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 10.0,
+                  ),
+                  prefixIcon: Icon(Icons.search),
+                  isDense: true,
+                  hintText: "Pesquisar obra...",
+                ),
+                style: TextStyle(),
+                //onChanged: (value) {},
+              ),
+              Expanded(child: ListComponent(listWorks: activeWorks)),
+              ElevatedButton(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddOrUpdateWorkScreen(),
+                  ),
+                ),
+                child: Row(children: [Icon(Icons.add), Text("Nova Obra")]),
+              ),
+            ],
+          );
   }
 }
