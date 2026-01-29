@@ -140,4 +140,4 @@ final class SortedWorksProvider
   }
 }
 
-String _$sortedWorksHash() => r'2ab1fdb56aaf49313a38d40b9fddb402e88d8fba';
+String _$sortedWorksHash() => r'e1c12a954255928027d6767712cd44b6ed98d656';

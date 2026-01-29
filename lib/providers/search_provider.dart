@@ -22,6 +22,7 @@ class SearchQuery extends _$SearchQuery {
 
 @riverpod
 List<Work> filteredWorks(Ref ref) {
+  ref.keepAlive();
   final worksAsync = ref.watch(workListProvider);
   final query = ref.watch(searchQueryProvider).toLowerCase();
 
@@ -37,6 +38,7 @@ List<Work> filteredWorks(Ref ref) {
 
 @riverpod
 List<Work> sortedWorks(Ref ref) {
+  ref.keepAlive();
   final works = ref.watch(filteredWorksProvider);
   final sort = ref.watch(sortConfigProvider);
 

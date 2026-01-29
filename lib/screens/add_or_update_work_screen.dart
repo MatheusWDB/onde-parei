@@ -29,7 +29,6 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
     final isEditing = widget.work != null;
 
     final work = Work(
-      id: isEditing ? widget.work!.id : DateTime.now().millisecondsSinceEpoch,
       title: _titleController.text.trim(),
       type: _selectedType,
       season: _selectedType.isVideo
@@ -49,7 +48,9 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
       updatedAt: DateTime.now(),
     );
 
-    isEditing ? notifier.updateWork(work) : notifier.addWork(work);
+    isEditing
+        ? notifier.updateWork(work.copyWith(id: widget.work!.id))
+        : notifier.addWork(work);
 
     Navigator.pop(context);
   }
