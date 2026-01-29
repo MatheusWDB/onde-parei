@@ -102,37 +102,35 @@ class CardComponent extends ConsumerWidget {
                   : Row(
                       spacing: 10.0,
                       children: [
-                        Container(
-                          alignment: Alignment.bottomRight,
+                        SizedBox(
                           width: 35.0,
                           height: 35.0,
-                          child: FittedBox(
-                            child: FloatingActionButton(
-                              //foregroundColor: Colors.white,
-                              shape: CircleBorder(),
-                              //backgroundColor: primaryColor,
-                              onPressed: () => _decrement(ref),
-                              child: const Icon(
-                                Icons.remove,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () => _decrement(ref),
+                            icon: const Icon(Icons.remove),
+                            style: IconButton.styleFrom(
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
+                              foregroundColor: Colors.white,
+                              shape: const CircleBorder(),
                             ),
                           ),
                         ),
-                        Container(
-                          alignment: Alignment.bottomRight,
+                        SizedBox(
                           width: 35.0,
                           height: 35.0,
-                          child: FittedBox(
-                            child: FloatingActionButton(
-                              //foregroundColor: Colors.white,
-                              shape: CircleBorder(),
-                              //backgroundColor: primaryColor,
-                              onPressed: () => _increase(ref),
-                              child: const Icon(
-                                Icons.add,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () => _increase(ref),
+                            icon: const Icon(Icons.add),
+                            style: IconButton.styleFrom(
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
+                              foregroundColor: Colors.white,
+                              shape: const CircleBorder(),
                             ),
                           ),
                         ),
