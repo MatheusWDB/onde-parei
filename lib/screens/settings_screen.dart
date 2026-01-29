@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:onde_parei/services/backup_service.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final backupService = BackupService();
+
     return Scaffold(
       appBar: AppBar(title: Text('Configurações')),
       body: SafeArea(
@@ -34,7 +38,9 @@ class SettingsScreen extends StatelessWidget {
                 Column(
                   children: [
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        await backupService.shareBackup();
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         spacing: 8.0,
@@ -42,7 +48,9 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        await backupService.importBackup(ref);
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         spacing: 8.0,

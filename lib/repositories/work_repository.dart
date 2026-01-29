@@ -31,4 +31,9 @@ class WorkRepository {
     final db = await _db.database;
     await db.delete(tableWorks, where: 'id = ?', whereArgs: [id]);
   }
+
+  Future<void> deleteAll() async {
+    final db = await _db.database;
+    await db.delete(tableWorks);
+  }
 }

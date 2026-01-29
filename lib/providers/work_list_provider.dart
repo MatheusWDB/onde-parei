@@ -38,4 +38,18 @@ class WorkList extends _$WorkList {
     final current = state.value ?? [];
     state = AsyncData(current.where((w) => w.id != id).toList());
   }
+
+  Future<void> replaceAll(List<Work> works) async {
+    final db = _repository;
+    await db.deleteAll();
+
+    final insertedWorks = <Work>[];
+
+    for (final work in works) {
+      final inserted = await _repository.insert(work);
+      insertedWorks.add(inserted);
+    }
+
+    state = AsyncData(insertedWorks);
+  }
 }

@@ -33,7 +33,7 @@ final class WorkListProvider
   WorkList create() => WorkList();
 }
 
-String _$workListHash() => r'0355f6c24e3a20751372752d3febb4ba75e68ce5';
+String _$workListHash() => r'837fb74ea87d9c44b5e285cf1e8aa3eb86330eff';
 
 abstract class _$WorkList extends $AsyncNotifier<List<Work>> {
   FutureOr<List<Work>> build();
