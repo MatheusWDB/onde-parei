@@ -10,9 +10,11 @@ class ListComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: listWorks.length,
+      itemCount: listWorks.length + 1,
       itemBuilder: (context, index) {
-        return CardComponent(work: listWorks[index]);
+        return index != listWorks.length
+            ? CardComponent(work: listWorks[index])
+            : SizedBox(height: 45.0);
       },
     );
   }
