@@ -49,16 +49,8 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
       updatedAt: DateTime.now(),
     );
 
-    isEditing ? notifier.update(work) : notifier.add(work);
+    isEditing ? notifier.updateWork(work) : notifier.addWork(work);
 
-    Navigator.pop(context);
-  }
-
-  void _delete() {
-    final id = widget.work?.id;
-    if (id == null) return;
-
-    ref.read(workListProvider.notifier).remove(id);
     Navigator.pop(context);
   }
 
@@ -124,6 +116,12 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
                             ),
                             hintStyle: TextStyle(fontSize: 14.0),
                           ),
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Informe um título';
+                            }
+                            return null;
+                          },
                         ),
                       ],
                     ),
@@ -216,28 +214,12 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
                   ],
                 ),
               ),
-              Column(
-                spacing: 8.0,
-                children: [
-                  ElevatedButton(
-                    onPressed: _save,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Icon(Icons.save), Text('Guardar Alterações')],
-                    ),
-                  ),
-                  if (widget.work != null)
-                    ElevatedButton(
-                      onPressed: _delete,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.delete_forever),
-                          Text('Eliminar Obra'),
-                        ],
-                      ),
-                    ),
-                ],
+              ElevatedButton(
+                onPressed: _save,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [Icon(Icons.save), Text('Guardar Alterações')],
+                ),
               ),
             ],
           ),

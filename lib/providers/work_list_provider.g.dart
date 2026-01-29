@@ -12,7 +12,8 @@ part of 'work_list_provider.dart';
 @ProviderFor(WorkList)
 final workListProvider = WorkListProvider._();
 
-final class WorkListProvider extends $NotifierProvider<WorkList, List<Work>> {
+final class WorkListProvider
+    extends $AsyncNotifierProvider<WorkList, List<Work>> {
   WorkListProvider._()
     : super(
         from: null,
@@ -30,29 +31,21 @@ final class WorkListProvider extends $NotifierProvider<WorkList, List<Work>> {
   @$internal
   @override
   WorkList create() => WorkList();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(List<Work> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<List<Work>>(value),
-    );
-  }
 }
 
-String _$workListHash() => r'e0fe37f075e5828c78f348bc2a357b5db26e3060';
+String _$workListHash() => r'0355f6c24e3a20751372752d3febb4ba75e68ce5';
 
-abstract class _$WorkList extends $Notifier<List<Work>> {
-  List<Work> build();
+abstract class _$WorkList extends $AsyncNotifier<List<Work>> {
+  FutureOr<List<Work>> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<List<Work>, List<Work>>;
+    final ref = this.ref as $Ref<AsyncValue<List<Work>>, List<Work>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<List<Work>, List<Work>>,
-              List<Work>,
+              AnyNotifier<AsyncValue<List<Work>>, List<Work>>,
+              AsyncValue<List<Work>>,
               Object?,
               Object?
             >;

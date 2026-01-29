@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/providers/work_list_provider.dart';
@@ -10,11 +11,51 @@ class CardComponent extends ConsumerWidget {
   const CardComponent({super.key, required this.work});
 
   void _increase(WidgetRef ref) {
-    ref.read(workListProvider.notifier).update(work.increment());
+    ref.read(workListProvider.notifier).updateWork(work.increment());
   }
 
   void _decrement(WidgetRef ref) {
-    ref.read(workListProvider.notifier).update(work.decrement());
+    ref.read(workListProvider.notifier).updateWork(work.decrement());
+  }
+
+  void _showActions(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(
+                  work.isFinished ? Icons.unarchive : Icons.archive,
+                ),
+                title: Text(work.isFinished ? 'Desarquivar' : 'Arquivar'),
+                onTap: () {
+                  ref
+                      .read(workListProvider.notifier)
+                      .updateWork(work.copyWith(isFinished: !work.isFinished));
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.delete),
+                title: Text('Excluir'),
+                onTap: () {
+                  ref.read(workListProvider.notifier).removeWork(work.id!);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.close),
+                title: Text('Cancelar'),
+                onTap: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -34,6 +75,10 @@ class CardComponent extends ConsumerWidget {
           builder: (context) => AddOrUpdateWorkScreen(work: work),
         ),
       ),
+      onLongPress: () {
+        HapticFeedback.mediumImpact();
+        _showActions(context, ref);
+      },
       child: Card(
         elevation: 2.0,
         child: Padding(

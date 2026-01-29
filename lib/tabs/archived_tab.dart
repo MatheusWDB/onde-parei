@@ -9,29 +9,35 @@ class ArchivedTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<Work> works = ref.watch(workListProvider);
+    final AsyncValue<List<Work>> worksAsync = ref.watch(workListProvider);
 
-    final List<Work> completedWorks = works
-        .where((work) => work.isFinished)
-        .toList();
+    return worksAsync.when(
+      data: (works) {
+        final List<Work> completedWorks = works
+            .where((work) => work.isFinished)
+            .toList();
 
-    return completedWorks.isEmpty
-        ? Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.menu_book, size: 45.0),
-                Text(
-                  'Nenhum item arquivado.',
-                  style: TextStyle(fontStyle: FontStyle.italic),
+        return completedWorks.isEmpty
+            ? Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.menu_book, size: 45.0),
+                    Text(
+                      'Nenhum item arquivado.',
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          )
-        : Column(
-            children: [
-              Expanded(child: ListComponent(listWorks: completedWorks)),
-            ],
-          );
+              )
+            : Column(
+                children: [
+                  Expanded(child: ListComponent(listWorks: completedWorks)),
+                ],
+              );
+      },
+      loading: () => const CircularProgressIndicator(),
+      error: (e, _) => Text('Erro: $e'),
+    );
   }
 }

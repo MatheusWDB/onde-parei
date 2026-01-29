@@ -103,7 +103,10 @@ class DatabaseHelper {
 
   Future<List<Work>> fetchAllWorks() async {
     Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(tableWorks);
+    final List<Map<String, dynamic>> maps = await db.query(
+      tableWorks,
+      orderBy: 'updatedAt DESC',
+    );
     return maps.map((e) => Work.fromMap(e)).toList();
   }
 
