@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:onde_parei/components/list_component.dart';
+import 'package:onde_parei/enums/sort_enum.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/providers/search_provider.dart';
+import 'package:onde_parei/providers/sort_provider.dart';
 
 class DashboardTab extends ConsumerWidget {
   const DashboardTab({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<Work> works = ref.watch(filteredWorksProvider);
+    final List<Work> works = ref.watch(sortedWorksProvider);
     final List<Work> activeWorks = works
         .where((work) => !work.isFinished)
         .toList();
@@ -17,24 +19,73 @@ class DashboardTab extends ConsumerWidget {
     return Column(
       spacing: 10.0,
       children: [
-        TextField(
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+        Row(
+          spacing: 10.0,
+          children: [
+            Expanded(
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                  ),
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 10.0,
+                    horizontal: 10.0,
+                  ),
+                  prefixIcon: Icon(Icons.search, size: 20),
+                  prefixIconConstraints: const BoxConstraints(
+                    minWidth: 32,
+                    minHeight: 32,
+                  ),
+                  hintText: "Pesquisar obra...",
+                ),
+                style: TextStyle(),
+                onChanged: (value) {
+                  ref.read(searchQueryProvider.notifier).setQuery(value);
+                },
+              ),
             ),
-            contentPadding: EdgeInsets.symmetric(
-              vertical: 8.0,
-              horizontal: 10.0,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                DropdownButton<SortField>(
+                  value: ref.watch(sortConfigProvider).field,
+                  iconSize: 0.0,
+                  onChanged: (value) {
+                    ref.read(sortConfigProvider.notifier).changeField(value!);
+                  },
+                  items: const [
+                    DropdownMenuItem(
+                      value: SortField.updatedAt,
+                      child: Text('Atualização'),
+                    ),
+                    DropdownMenuItem(
+                      value: SortField.createdAt,
+                      child: Text('Criação'),
+                    ),
+                    DropdownMenuItem(
+                      value: SortField.title,
+                      child: Text('Título'),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  iconSize: 20.0,
+                  onPressed: () {
+                    ref.read(sortConfigProvider.notifier).toggleDirection();
+                  },
+                  icon: Icon(
+                    ref.watch(sortConfigProvider).direction == SortDirection.asc
+                        ? Icons.arrow_upward
+                        : Icons.arrow_downward,
+                  ),
+                ),
+              ],
             ),
-            prefixIcon: Icon(Icons.search),
-            isDense: true,
-            hintText: "Pesquisar obra...",
-          ),
-          style: TextStyle(),
-          onChanged: (value) {
-            ref.read(searchQueryProvider.notifier).setQuery(value);
-          },
+          ],
         ),
+
         Expanded(
           child: activeWorks.isEmpty
               ? Center(

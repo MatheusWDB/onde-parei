@@ -1,4 +1,6 @@
+import 'package:onde_parei/enums/sort_enum.dart';
 import 'package:onde_parei/models/work.dart';
+import 'package:onde_parei/providers/sort_provider.dart';
 import 'package:onde_parei/providers/work_list_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -31,4 +33,39 @@ List<Work> filteredWorks(Ref ref) {
     loading: () => const [],
     error: (_, __) => const [],
   );
+}
+
+@riverpod
+List<Work> sortedWorks(Ref ref) {
+  final works = ref.watch(filteredWorksProvider);
+  final sort = ref.watch(sortConfigProvider);
+
+  final sorted = [...works];
+
+  int compare(Work a, Work b) {
+    int result;
+
+    switch (sort.field) {
+      case SortField.title:
+        result = a.title.compareTo(b.title);
+        break;
+
+      case SortField.createdAt:
+        result = (a.createdAt ?? DateTime(0)).compareTo(
+          b.createdAt ?? DateTime(0),
+        );
+        break;
+
+      case SortField.updatedAt:
+        result = (a.updatedAt ?? DateTime(0)).compareTo(
+          b.updatedAt ?? DateTime(0),
+        );
+        break;
+    }
+
+    return sort.direction == SortDirection.asc ? result : -result;
+  }
+
+  sorted.sort(compare);
+  return sorted;
 }

@@ -100,3 +100,44 @@ final class FilteredWorksProvider
 }
 
 String _$filteredWorksHash() => r'8b38a1ca5115a0daa06f0fe882642ba13951348c';
+
+@ProviderFor(sortedWorks)
+final sortedWorksProvider = SortedWorksProvider._();
+
+final class SortedWorksProvider
+    extends $FunctionalProvider<List<Work>, List<Work>, List<Work>>
+    with $Provider<List<Work>> {
+  SortedWorksProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'sortedWorksProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$sortedWorksHash();
+
+  @$internal
+  @override
+  $ProviderElement<List<Work>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<Work> create(Ref ref) {
+    return sortedWorks(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<Work> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<Work>>(value),
+    );
+  }
+}
+
+String _$sortedWorksHash() => r'2ab1fdb56aaf49313a38d40b9fddb402e88d8fba';
