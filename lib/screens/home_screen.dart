@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onde_parei/screens/add_or_update_work_screen.dart';
 import 'package:onde_parei/screens/settings_screen.dart';
 import 'package:onde_parei/tabs/archived_tab.dart';
 import 'package:onde_parei/tabs/dashboard_tab.dart';
@@ -86,6 +87,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ],
         ),
       ),
+      floatingActionButton: _activeMenu == 0
+          ? Container(
+              alignment: Alignment.bottomRight,
+              width: 45.0,
+              height: 45.0,
+              child: FittedBox(
+                child: FloatingActionButton(
+                  //foregroundColor: Colors.white,
+                  shape: CircleBorder(),
+                  //backgroundColor: primaryColor,
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddOrUpdateWorkScreen(),
+                    ),
+                  ),
+                  child: const Icon(Icons.add, fontWeight: FontWeight.bold),
+                ),
+              ),
+            )
+          : null,
       body: SafeArea(
         child: Container(
           padding: EdgeInsets.all(18.0),
