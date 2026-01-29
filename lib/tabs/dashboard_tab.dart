@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:onde_parei/components/list_component.dart';
 import 'package:onde_parei/enums/sort_enum.dart';
+import 'package:onde_parei/enums/wich_screen_enum.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/providers/search_provider.dart';
 import 'package:onde_parei/providers/sort_provider.dart';
@@ -85,7 +86,6 @@ class DashboardTab extends ConsumerWidget {
             ),
           ],
         ),
-
         Expanded(
           child: activeWorks.isEmpty
               ? Center(
@@ -100,7 +100,7 @@ class DashboardTab extends ConsumerWidget {
                     ],
                   ),
                 )
-              : ListComponent(listWorks: activeWorks),
+              : ListComponent(wichScreen: WichScreenEnum.dashboard,),
         ),
       ],
     );

@@ -1,0 +1,1 @@
+enum WichScreenEnum { dashboard, archived }
