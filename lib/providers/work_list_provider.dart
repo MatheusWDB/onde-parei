@@ -22,34 +22,39 @@ class WorkList extends _$WorkList {
   }
 
   Future<void> addWork(Work work) async {
-    final inserted = await _repository.insert(work);
     final current = state.value ?? [];
-    state = AsyncData([...current, inserted]);
+    state = await AsyncValue.guard(() async {
+      final inserted = await _repository.insert(work);
+      return [...current, inserted];
+    });
   }
 
   Future<void> updateWork(Work work) async {
-    await _repository.update(work);
     final current = state.value ?? [];
-    state = AsyncData(current.map((w) => w.id == work.id ? work : w).toList());
+    state = await AsyncValue.guard(() async {
+      await _repository.update(work);
+      return current.map((w) => w.id == work.id ? work : w).toList();
+    });
   }
 
   Future<void> removeWork(int id) async {
-    await _repository.delete(id);
     final current = state.value ?? [];
-    state = AsyncData(current.where((w) => w.id != id).toList());
+    state = await AsyncValue.guard(() async {
+      await _repository.delete(id);
+      return current.where((w) => w.id != id).toList();
+    });
   }
 
   Future<void> replaceAll(List<Work> works) async {
-    final db = _repository;
-    await db.deleteAll();
+    state = await AsyncValue.guard(() async {
+      final db = _repository;
+      await db.deleteAll();
 
-    final insertedWorks = <Work>[];
+      final List<Work> insertedWorks = await Future.wait(
+        works.map((work) => db.insert(work)).toList(),
+      );
 
-    for (final work in works) {
-      final inserted = await _repository.insert(work);
-      insertedWorks.add(inserted);
-    }
-
-    state = AsyncData(insertedWorks);
+      return insertedWorks;
+    });
   }
 }
