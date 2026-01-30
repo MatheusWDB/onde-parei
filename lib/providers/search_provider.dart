@@ -32,7 +32,7 @@ List<Work> filteredWorks(Ref ref) {
       return works.where((w) => w.title.toLowerCase().contains(query)).toList();
     },
     loading: () => const [],
-    error: (_, __) => const [],
+    error: (_, _) => const [],
   );
 }
 

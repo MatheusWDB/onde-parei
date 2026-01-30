@@ -99,7 +99,7 @@ final class FilteredWorksProvider
   }
 }
 
-String _$filteredWorksHash() => r'8b38a1ca5115a0daa06f0fe882642ba13951348c';
+String _$filteredWorksHash() => r'1cf9ed76d06cdaf7e933cab8d346b9229b246afe';
 
 @ProviderFor(sortedWorks)
 final sortedWorksProvider = SortedWorksProvider._();
@@ -140,4 +140,4 @@ final class SortedWorksProvider
   }
 }
 
-String _$sortedWorksHash() => r'e1c12a954255928027d6767712cd44b6ed98d656';
+String _$sortedWorksHash() => r'3ad659728772eda0f857f01cb6dd26a0639054ec';
