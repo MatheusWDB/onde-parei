@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:onde_parei/models/work.dart';
-import 'package:onde_parei/providers/work_list_provider.dart';
 import 'package:onde_parei/repositories/work_repository.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -31,22 +30,18 @@ class BackupService {
     await SharePlus.instance.share(ShareParams(files: [XFile(file.path)]));
   }
 
- Future<void> importBackup(WidgetRef ref) async {
+  Future<List<Work>?> importBackup(WidgetRef ref) async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['json'],
     );
 
-    if (result == null || result.files.single.path == null) return;
+    if (result == null || result.files.single.path == null) return null;
 
     final file = File(result.files.single.path!);
     final jsonString = await file.readAsString();
 
     final List decoded = jsonDecode(jsonString);
-    final works = decoded.map((e) => Work.fromJson(e)).toList();
-
-    final notifier = ref.read(workListProvider.notifier);
-
-    await notifier.replaceAll(works);
+    return decoded.map((e) => Work.fromJson(e)).toList();
   }
 }
