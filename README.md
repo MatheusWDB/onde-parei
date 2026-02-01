@@ -82,8 +82,10 @@ Após iniciar o aplicativo, você pode:
 
 1. **Adicionar uma obra:** Clique no botão "+" na tela inicial, preencha o título, selecione o tipo (Livro, Mangá, etc.) e defina o capítulo inicial.
 2. **Atualizar progresso:** Clique em um item da lista para editar o progresso ou outras informações.
-3. **Filtrar:** Use as abas superiores para ver apenas tipos específicos de obras.
-4. **Backup:** Vá em "Configurações" para exportar seus dados para a pasta de downloads do celular.
+3. **Escluir ou Arquivar uma obra:** Segure em um item da lista para mostar as opções disponíveis.
+4. **Pesquisar obra:** Utilize o campo para pesquisar uma obra específica.
+5. **Ordenar:** Use o menu superior para ordenar as obras por título, ou data de criação.
+6. **Backup:** Vá em "Configurações" para exportar seus dados para compartilhar o arquivo .json com os dados salvos.
 ________________________________________
 # 🖼️ Capturas de Tela/GIFs
 | Home Screen | Add/Update Work | Settings |
