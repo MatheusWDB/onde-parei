@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:onde_parei/models/app_settings.dart';
+import 'package:onde_parei/providers/settings_provider.dart';
 import 'package:onde_parei/screens/home_screen.dart';
+import 'package:onde_parei/theme/app_themes.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+    
     return MaterialApp(
-      title: 'Onde Parei',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
+      title: 'Onde Parei?',
+      debugShowCheckedModeBanner: false,
+      themeMode: settings.themeMode.toThemeMode(),
+      theme: AppThemes.light,
+      darkTheme: AppThemes.dark,
       home: HomeScreen(),
     );
   }
