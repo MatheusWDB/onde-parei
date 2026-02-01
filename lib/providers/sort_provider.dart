@@ -7,7 +7,8 @@ part 'sort_provider.g.dart';
 class SortConfig extends _$SortConfig {
   @override
   ({SortField field, SortDirection direction}) build() {
-    return (field: SortField.updatedAt, direction: SortDirection.desc);
+    return (field: SortField.title, direction: SortDirection.asc
+    );
   }
 
   void changeField(SortField field) {

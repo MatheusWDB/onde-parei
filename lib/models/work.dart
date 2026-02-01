@@ -18,10 +18,10 @@ class Work {
     this.id,
     required this.title,
     required this.type,
-    this.season = 0,
-    this.episode = 0,
-    this.chapter = 0.0,
-    this.page = 0,
+    this.season = 1,
+    this.episode = 1,
+    this.chapter = 1.0,
+    this.page = 1,
     this.isFinished = false,
     this.createdAt,
     this.updatedAt,
@@ -60,7 +60,8 @@ class Work {
       final chapterLabel = type == TypeEnum.manhwa
           ? chapter.toStringAsFixed(1)
           : chapter.toStringAsFixed(0);
-      return "Cap. $chapterLabel • Pág. $page";
+
+      return "Cap. $chapterLabel${type == TypeEnum.book ? " • Pág. $page" : ""}";
     }
     return "Temp. $season • Ep. $episode";
   }
