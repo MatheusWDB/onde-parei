@@ -88,9 +88,9 @@ Após iniciar o aplicativo, você pode:
 6. **Backup:** Vá em "Configurações" para exportar seus dados para compartilhar o arquivo .json com os dados salvos.
 ________________________________________
 # 🖼️ Capturas de Tela/GIFs
-| Home Screen | Add/Update Work | Settings |
-|:-------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------:|
+
 | ![0](https://github.com/user-attachments/assets/75c28999-6321-481c-a1a1-eca55448d398) | ![1](https://github.com/user-attachments/assets/47408e2a-3ad4-4e7b-8235-a8bff554971b) | ![2](https://github.com/user-attachments/assets/5cea5829-0705-4e56-bfe8-971f03451715) |
+|:-------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------:|
 | ![3](https://github.com/user-attachments/assets/3d241499-3fb7-4444-afb1-401540803c32) | ![4](https://github.com/user-attachments/assets/60e6db55-5da2-440f-ab25-55c5da34f33a) | ![5](https://github.com/user-attachments/assets/a8368fb3-a770-4af8-95b3-967a8958dc7e)|
 ________________________________________
 ## 🧑‍💻 Autor
