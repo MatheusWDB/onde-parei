@@ -40,8 +40,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 1.0,
-        shadowColor: Colors.black,
         actionsPadding: EdgeInsets.all(8.0),
         actions: [
           IconButton(
