@@ -21,6 +21,7 @@ class CardComponent extends ConsumerWidget {
   void _showActions(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       builder: (_) {
         return SafeArea(
           child: Column(
@@ -81,17 +82,58 @@ class CardComponent extends ConsumerWidget {
       },
       child: Card(
         elevation: 2.0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Padding(
-          padding: const EdgeInsets.all(14.0),
+          padding: const EdgeInsets.all(16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             spacing: 8.0,
             children: [
-              Icon(icon),
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: Theme.of(context).colorScheme.primary),
+              ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [Text(work.title), Text(work.progressLabel)],
+                  children: [
+                    Text(
+                      work.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      work.type.displayName,
+                      style: TextStyle(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.6),
+                        fontSize: 13,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    Text(
+                      work.progressLabel,
+                      style: TextStyle(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.7),
+                        fontSize: 13,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               work.isFinished
@@ -108,12 +150,14 @@ class CardComponent extends ConsumerWidget {
                           child: IconButton(
                             padding: EdgeInsets.zero,
                             onPressed: () => _decrement(ref),
-                            icon: const Icon(Icons.remove),
+                            icon: Icon(
+                              Icons.remove,
+                              color: Theme.of(context).colorScheme.surface,
+                            ),
                             style: IconButton.styleFrom(
                               backgroundColor: Theme.of(
                                 context,
-                              ).colorScheme.primary,
-                              foregroundColor: Colors.white,
+                              ).colorScheme.secondary,
                               shape: const CircleBorder(),
                             ),
                           ),
@@ -124,12 +168,14 @@ class CardComponent extends ConsumerWidget {
                           child: IconButton(
                             padding: EdgeInsets.zero,
                             onPressed: () => _increase(ref),
-                            icon: const Icon(Icons.add),
+                            icon: Icon(
+                              Icons.add,
+                              color: Theme.of(context).colorScheme.surface,
+                            ),
                             style: IconButton.styleFrom(
                               backgroundColor: Theme.of(
                                 context,
                               ).colorScheme.primary,
-                              foregroundColor: Colors.white,
                               shape: const CircleBorder(),
                             ),
                           ),

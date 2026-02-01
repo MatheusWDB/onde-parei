@@ -14,13 +14,14 @@ class ListComponent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final List<Work> works = ref.watch(sortedWorksProvider);
     final bool condition = wichScreen == WichScreenEnum.dashboard;
-    
+
     final worksBuilder = condition
         ? works.where((work) => !work.isFinished).toList()
         : works.where((work) => work.isFinished).toList();
 
-    return ListView.builder(
+    return ListView.separated(
       itemCount: condition ? worksBuilder.length + 1 : worksBuilder.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 6),
       itemBuilder: (context, index) {
         return index != worksBuilder.length
             ? CardComponent(work: worksBuilder[index])

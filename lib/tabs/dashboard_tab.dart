@@ -26,10 +26,12 @@ class DashboardTab extends ConsumerWidget {
             Expanded(
               child: TextField(
                 decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.surface,
                   border: OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
                   ),
-                  isDense: true,
                   contentPadding: const EdgeInsets.symmetric(
                     vertical: 10.0,
                     horizontal: 10.0,
@@ -39,7 +41,7 @@ class DashboardTab extends ConsumerWidget {
                     minWidth: 32,
                     minHeight: 32,
                   ),
-                  hintText: "Pesquisar obra...",
+                  hintText: "Pesquisar...",
                 ),
                 style: TextStyle(),
                 onChanged: (value) {
@@ -92,7 +94,11 @@ class DashboardTab extends ConsumerWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.menu_book, size: 45.0),
+                      Icon(
+                        Icons.menu_book,
+                        size: 45.0,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                       Text(
                         'Nenhum item salvo.',
                         style: TextStyle(fontStyle: FontStyle.italic),
@@ -100,7 +106,7 @@ class DashboardTab extends ConsumerWidget {
                     ],
                   ),
                 )
-              : ListComponent(wichScreen: WichScreenEnum.dashboard,),
+              : ListComponent(wichScreen: WichScreenEnum.dashboard),
         ),
       ],
     );
