@@ -5,8 +5,8 @@ import 'package:onde_parei/enums/wich_screen_enum.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/providers/search_provider.dart';
 
-class ArchivedTab extends ConsumerWidget {
-  const ArchivedTab({super.key});
+class CompletedTab extends ConsumerWidget {
+  const CompletedTab({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,9 +23,13 @@ class ArchivedTab extends ConsumerWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.menu_book, size: 45.0),
+                      Icon(
+                        Icons.menu_book,
+                        size: 45.0,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                       Text(
-                        'Nenhum item arquivado.',
+                        'Nenhum item concluído.',
                         style: TextStyle(fontStyle: FontStyle.italic),
                       ),
                     ],
