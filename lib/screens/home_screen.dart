@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onde_parei/screens/add_or_update_work_screen.dart';
 import 'package:onde_parei/screens/settings_screen.dart';
-import 'package:onde_parei/tabs/archived_tab.dart';
+import 'package:onde_parei/tabs/completed_tab.dart';
 import 'package:onde_parei/tabs/dashboard_tab.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,24 +14,19 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late final TabController _tabController;
   int _activeMenu = 0;
-  String _title = "Onde Parei?";
-  Widget _childContent = DashboardTab();
+
+  String _title() {
+    return _activeMenu == 0 ? "Onde Parei?" : "Concluídos";
+  }
+
+  Widget _buildTap() {
+    return _activeMenu == 0 ? DashboardTab() : CompletedTab();
+  }
 
   void _changeMenu(int value) {
     setState(() {
       _activeMenu = value;
       _tabController.index = value;
-
-      switch (value) {
-        case 0:
-          _childContent = DashboardTab();
-          _title = 'Onde Parei?';
-          break;
-        default:
-          _childContent = ArchivedTab();
-          _title = 'Arquivados';
-          break;
-      }
     });
   }
 
@@ -50,42 +45,32 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         actionsPadding: EdgeInsets.all(8.0),
         actions: [
           IconButton(
-            //color: Colors.white,
-            style: IconButton.styleFrom(
-              //backgroundColor: primaryColor,
-              elevation: 2.0,
-              //shadowColor: Colors.black,
-            ),
+            style: IconButton.styleFrom(elevation: 2.0),
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => SettingsScreen()),
             ),
-            icon: Icon(Icons.settings),
+            icon: Icon(Icons.settings_outlined),
           ),
         ],
-        title: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(_title, style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          _title(),
+          style: const TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        elevation: 2.0,
-        shadowColor: Colors.black,
-        child: TabBar(
-          controller: _tabController,
-          tabAlignment: TabAlignment.fill,
-          //labelColor: primaryColor,
-          //indicatorColor: primaryColor,
-          onTap: (value) {
-            if (value == _activeMenu) return;
-
-            _changeMenu(value);
-          },
-          tabs: [
-            Column(children: [Icon(Icons.grid_view), Text("Início")]),
-            Column(children: [Icon(Icons.archive), Text("Arquivos")]),
-          ],
-        ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _activeMenu,
+        onDestinationSelected: _changeMenu,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.grid_view_outlined),
+            label: 'Início',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.archive_outlined),
+            label: 'Concluídos',
+          ),
+        ],
       ),
       floatingActionButton: _activeMenu == 0
           ? Container(
@@ -113,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           padding: EdgeInsets.all(18.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [Expanded(child: _childContent)],
+            children: [Expanded(child: _buildTap())],
           ),
         ),
       ),
