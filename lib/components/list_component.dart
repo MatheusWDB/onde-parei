@@ -27,13 +27,11 @@ class ListComponent extends ConsumerWidget {
 
     return ListView.separated(
       itemCount: condition ? worksBuilder.length + 1 : worksBuilder.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 6),
+      separatorBuilder: (_, _) => const SizedBox(height: 6),
       itemBuilder: (context, index) {
-        return index != worksBuilder.length
-            ? CardComponent(work: worksBuilder[index])
-            : condition
+        return index == worksBuilder.length && condition
             ? SizedBox(height: 45.0)
-            : null;
+            : CardComponent(work: worksBuilder[index]);
       },
     );
   }

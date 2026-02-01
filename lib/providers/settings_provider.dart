@@ -7,6 +7,7 @@ part 'settings_provider.g.dart';
 @riverpod
 class Settings extends _$Settings {
   late final SharedPreferences _prefs;
+
   static const _themeKey = 'theme_mode';
   static const _confirmKey = 'confirm_delete';
   static const _showCompletedKey = 'show_completed';
@@ -15,7 +16,7 @@ class Settings extends _$Settings {
   @override
   AppSettings build() {
     ref.keepAlive();
-    _init();
+
     _loadFromStorage();
 
     return const AppSettings(
@@ -26,11 +27,9 @@ class Settings extends _$Settings {
     );
   }
 
-  Future<void> _init() async {
-    _prefs = await SharedPreferences.getInstance();
-  }
-
   Future<void> _loadFromStorage() async {
+    _prefs = await SharedPreferences.getInstance();
+
     final themeIndex = _prefs.getInt(_themeKey);
     final confirm = _prefs.getBool(_confirmKey);
     final showCompleted = _prefs.getBool(_showCompletedKey);

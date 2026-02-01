@@ -11,8 +11,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  late final TabController _tabController;
+class _HomeScreenState extends State<HomeScreen> {
   int _activeMenu = 0;
 
   String _title() {
@@ -26,14 +25,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void _changeMenu(int value) {
     setState(() {
       _activeMenu = value;
-      _tabController.index = value;
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -77,9 +69,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               height: 45.0,
               child: FittedBox(
                 child: FloatingActionButton(
-                  //foregroundColor: Colors.white,
                   shape: CircleBorder(),
-                  //backgroundColor: primaryColor,
                   onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
