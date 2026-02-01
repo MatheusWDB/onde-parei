@@ -32,17 +32,17 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
       title: _titleController.text.trim(),
       type: _selectedType,
       season: _selectedType.isVideo
-          ? int.tryParse(_seasonOrChapterController.text) ?? 0
-          : 0,
+          ? int.tryParse(_seasonOrChapterController.text) ?? 1
+          : 1,
       episode: _selectedType.isVideo
-          ? int.tryParse(_episodeOrPageController.text) ?? 0
-          : 0,
+          ? int.tryParse(_episodeOrPageController.text) ?? 1
+          : 1,
       chapter: _selectedType.isReading
-          ? double.tryParse(_seasonOrChapterController.text) ?? 0
-          : 0,
+          ? double.tryParse(_seasonOrChapterController.text) ?? 1.0
+          : 1.0,
       page: _selectedType.isReading
-          ? int.tryParse(_episodeOrPageController.text) ?? 0
-          : 0,
+          ? int.tryParse(_episodeOrPageController.text) ?? 1
+          : 1,
       isFinished: widget.work?.isFinished ?? false,
       createdAt: widget.work?.createdAt,
       updatedAt: DateTime.now(),
@@ -86,7 +86,12 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.work == null ? 'Nova Obra' : 'Editar')),
+      appBar: AppBar(
+        title: Text(
+          widget.work == null ? 'Nova Obra' : 'Editar',
+          style: const TextStyle(fontWeight: FontWeight.w700),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -108,7 +113,6 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
                           controller: _titleController,
                           decoration: InputDecoration(
                             hintText: 'Ex: Harry Potter',
-                            labelText: widget.work?.title,
                             errorMaxLines: 2,
                             border: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(
@@ -166,7 +170,7 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
                                 decoration: InputDecoration(
                                   hintText: widget.work == null
                                       ? '0'
-                                      : widget.work!.isFinished
+                                      : widget.work!.isReadingType
                                       ? widget.work!.chapter.toString()
                                       : widget.work!.season.toString(),
                                   errorMaxLines: 2,
@@ -186,27 +190,30 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                _selectedType.isVideo ? 'Episódio' : 'Página',
-                              ),
-                              TextFormField(
-                                controller: _episodeOrPageController,
-                                decoration: InputDecoration(
-                                  hintText: widget.work == null
-                                      ? '0'
-                                      : widget.work!.isFinished
-                                      ? widget.work!.page.toString()
-                                      : widget.work!.episode.toString(),
-                                  errorMaxLines: 2,
-                                  border: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(6),
-                                    ),
-                                  ),
-                                  hintStyle: TextStyle(fontSize: 14.0),
+                              if (!_selectedType.isReading ||
+                                  _selectedType == TypeEnum.book) ...[
+                                Text(
+                                  _selectedType.isVideo ? 'Episódio' : 'Página',
                                 ),
-                                keyboardType: TextInputType.number,
-                              ),
+                                TextFormField(
+                                  controller: _episodeOrPageController,
+                                  decoration: InputDecoration(
+                                    hintText: widget.work == null
+                                        ? '0'
+                                        : widget.work!.isReadingType
+                                        ? widget.work!.page.toString()
+                                        : widget.work!.episode.toString(),
+                                    errorMaxLines: 2,
+                                    border: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(6),
+                                      ),
+                                    ),
+                                    hintStyle: TextStyle(fontSize: 14.0),
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                ),
+                              ],
                             ],
                           ),
                         ),
