@@ -47,6 +47,7 @@ class SettingsScreen extends ConsumerWidget {
           child: Column(
             children: [
               ListTile(
+                dense: true,
                 title: const Text('Tema'),
                 trailing: DropdownButton<AppThemeMode>(
                   value: ref.watch(settingsProvider).themeMode,
@@ -71,6 +72,39 @@ class SettingsScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+              ListTile(
+                dense: true,
+                title: Text('Mostar Concluídos no Início'),
+                trailing: Switch(
+                  value: ref.watch(settingsProvider).showCompletedOnDashboard,
+                  onChanged: (value) {
+                    ref.read(settingsProvider.notifier).setShowCompleted(value);
+                  },
+                ),
+              ),
+              ListTile(
+                dense: true,
+                title: Text('Confirmar Exclusão'),
+                trailing: Switch(
+                  value: ref.watch(settingsProvider).confirmBeforeDelete,
+                  onChanged: (value) {
+                    ref.read(settingsProvider.notifier).setConfirmDelete(value);
+                  },
+                ),
+              ),
+              /** 
+              ListTile(
+                dense: true,
+                title: Text('Lembrar de Fazer Backup'),
+                trailing: Switch(
+                  value: ref.watch(settingsProvider).enableBackupReminder,
+                  onChanged: (value) {
+                    ref
+                        .read(settingsProvider.notifier)
+                        .setBackupReminder(value);
+                  },
+                ),
+              ),*/
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Theme.of(context).dividerColor),
@@ -89,13 +123,13 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                     Text(
                       'O "Onde Parei?" guarda tudo localmente. Use as opções abaixo para não perder seus dados ao trocar ou formatar o dispositivo.',
-                      style: TextStyle(),
                       textAlign: TextAlign.start,
                     ),
                     Card(
                       child: Column(
                         children: [
                           ListTile(
+                            dense: true,
                             leading: Icon(Icons.download),
                             title: Text('Baixar backup'),
                             subtitle: Text('Exportar seus dados'),
@@ -105,6 +139,7 @@ class SettingsScreen extends ConsumerWidget {
                           ),
                           Divider(),
                           ListTile(
+                            dense: true,
                             leading: Icon(Icons.upload),
                             title: Text('Carregar backup'),
                             subtitle: Text('Substituir dados atuais'),

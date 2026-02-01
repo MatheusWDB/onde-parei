@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:onde_parei/models/app_settings.dart';
 import 'package:onde_parei/models/work.dart';
+import 'package:onde_parei/providers/settings_provider.dart';
 import 'package:onde_parei/providers/work_list_provider.dart';
 import 'package:onde_parei/screens/add_or_update_work_screen.dart';
 
@@ -18,11 +20,35 @@ class CardComponent extends ConsumerWidget {
     ref.read(workListProvider.notifier).updateWork(work.decrement());
   }
 
+  Future<bool?> _showConfirmDelete(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar Exclusão'),
+        content: const Text(
+          'Isso irá apagar permanentemente o item.\nDeseja continuar?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Confirmar'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showActions(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Theme.of(context).colorScheme.surface,
       builder: (_) {
+        final AppSettings settings = ref.watch(settingsProvider);
+
         return SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -36,14 +62,22 @@ class CardComponent extends ConsumerWidget {
                   ref
                       .read(workListProvider.notifier)
                       .updateWork(work.copyWith(isFinished: !work.isFinished));
+
                   Navigator.pop(context);
                 },
               ),
               ListTile(
                 leading: Icon(Icons.delete),
                 title: Text('Excluir'),
-                onTap: () {
+                onTap: () async {
+                  if (settings.confirmBeforeDelete) {
+                    final bool? confirm = await _showConfirmDelete(context);
+                    if (confirm != true) return;
+                  }
                   ref.read(workListProvider.notifier).removeWork(work.id!);
+
+                  if (!context.mounted) return;
+
                   Navigator.pop(context);
                 },
               ),
