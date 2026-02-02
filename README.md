@@ -7,9 +7,8 @@
 O projeto conta com armazenamento local seguro, sistema de busca avançado, ordenação personalizada e funcionalidades de backup para garantir a persistência dos dados.
 
 ## Funcionalidades:
-* **Gerenciamento de Obras:** Cadastrar, editar e excluir registros de livros, mangás, HQs e filmes.
+* **Gerenciamento de Obras:** Cadastrar, editar e excluir registros de livros, mangás, HQs, séries, etc.
 * **Controle de Progresso:** Atualização rápida do capítulo ou página atual.
-* **Categorização:** Filtros por tipo de obra para facilitar a navegação.
 * **Busca e Ordenação:** Localização rápida de títulos e organização por nome ou data de atualização.
 * **Configurações Personalizadas:** Escolha de temas e preferências de exibição.
 * **Sistema de Backup:** Exportação e importação de dados para segurança das informações.
