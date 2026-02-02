@@ -42,8 +42,7 @@ ________________________________________
 * **sqflite:** Banco de dados relacional local.
 * **flutter_riverpod:** Gerenciamento de estado moderno.
 * **path_provider:** Acesso ao sistema de arquivos para backups.
-* **intl:** Formatação de datas e internacionalização.
-* **permission_handler:** Gerenciamento de permissões de armazenamento.
+* **intl:** Formatação de datas.
 ________________________________________
 # 🛠️ Instalação
 
