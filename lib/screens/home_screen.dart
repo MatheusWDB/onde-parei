@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:onde_parei/screens/add_or_update_work_screen.dart';
 import 'package:onde_parei/screens/settings_screen.dart';
 import 'package:onde_parei/tabs/completed_tab.dart';
@@ -23,6 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _changeMenu(int value) {
+    HapticFeedback.selectionClick();
+
     setState(() {
       _activeMenu = value;
     });
@@ -36,10 +39,13 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             style: IconButton.styleFrom(elevation: 2.0),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SettingsScreen()),
-            ),
+            onPressed: () {
+              HapticFeedback.selectionClick();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsScreen()),
+              );
+            },
             icon: Icon(Icons.settings_outlined),
           ),
         ],
@@ -70,12 +76,15 @@ class _HomeScreenState extends State<HomeScreen> {
               child: FittedBox(
                 child: FloatingActionButton(
                   shape: CircleBorder(),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AddOrUpdateWorkScreen(),
-                    ),
-                  ),
+                  onPressed: () {
+                    HapticFeedback.selectionClick();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddOrUpdateWorkScreen(),
+                      ),
+                    );
+                  },
                   child: const Icon(Icons.add, fontWeight: FontWeight.bold),
                 ),
               ),

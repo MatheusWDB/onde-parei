@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:onde_parei/enums/type_enum.dart';
 import 'package:onde_parei/models/work.dart';
@@ -23,6 +24,8 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
 
   void _save() {
     if (!_formKey.currentState!.validate()) return;
+    
+    HapticFeedback.mediumImpact();
 
     final notifier = ref.read(workListProvider.notifier);
 

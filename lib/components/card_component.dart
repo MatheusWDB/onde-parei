@@ -104,6 +104,7 @@ class CardComponent extends ConsumerWidget {
     }
 
     return InkWell(
+      borderRadius: BorderRadius.circular(16),
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
@@ -183,7 +184,10 @@ class CardComponent extends ConsumerWidget {
                           height: 35.0,
                           child: IconButton(
                             padding: EdgeInsets.zero,
-                            onPressed: () => _decrement(ref),
+                            onPressed: () {
+                              HapticFeedback.selectionClick();
+                              return _decrement(ref);
+                            },
                             icon: Icon(
                               Icons.remove,
                               color: Theme.of(context).colorScheme.surface,
@@ -201,7 +205,10 @@ class CardComponent extends ConsumerWidget {
                           height: 35.0,
                           child: IconButton(
                             padding: EdgeInsets.zero,
-                            onPressed: () => _increase(ref),
+                            onPressed: () {
+                              HapticFeedback.selectionClick();
+                              return _increase(ref);
+                            },
                             icon: Icon(
                               Icons.add,
                               color: Theme.of(context).colorScheme.surface,
