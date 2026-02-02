@@ -2,7 +2,7 @@
 [![NPM](https://img.shields.io/npm/l/react)](https://github.com/MatheusWDB/onde-parei/blob/main/LICENSE)
 
 # Sobre o projeto
-**Onde Parei?** é uma aplicação mobile desenvolvida com Flutter para ajudar entusiastas de leitura e entretenimento a organizar seu progresso em diferentes tipos de obras. O sistema permite o registro detalhado de livros, mangás, HQs e filmes, garantindo que o usuário nunca esqueça em qual capítulo ou página parou.
+**Onde Parei?** é uma aplicação mobile desenvolvida com Flutter para ajudar entusiastas de leitura e entretenimento a organizar seu progresso em diferentes tipos de obras. O sistema permite o registro detalhado de livros, mangás, HQs séries, etc, garantindo que o usuário nunca esqueça em qual capítulo ou página parou.
 
 O projeto conta com armazenamento local seguro, sistema de busca avançado, ordenação personalizada e funcionalidades de backup para garantir a persistência dos dados.
 
