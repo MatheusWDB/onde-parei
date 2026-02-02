@@ -32,27 +32,33 @@ class Work {
   Work increment() {
     if (isReadingType) {
       if (type == TypeEnum.manhwa) {
-        return copyWith(chapter: chapter + 0.5);
+        return copyWith(chapter: chapter + 0.5, updatedAt: updatedAt);
       }
       if (type == TypeEnum.manga || type == TypeEnum.hq) {
-        return copyWith(chapter: chapter + 1.0);
+        return copyWith(chapter: chapter + 1.0, updatedAt: updatedAt);
       }
-      return copyWith(page: page + 1);
+      return copyWith(page: page + 1, updatedAt: updatedAt);
     }
-    return copyWith(episode: episode + 1);
+    return copyWith(episode: episode + 1, updatedAt: updatedAt);
   }
 
   Work decrement() {
     if (isReadingType) {
       if (type == TypeEnum.manhwa) {
-        return copyWith(chapter: _clampDouble(chapter - 0.5));
+        return copyWith(
+          chapter: _clampDouble(chapter - 0.5),
+          updatedAt: updatedAt,
+        );
       }
       if (type == TypeEnum.manga || type == TypeEnum.hq) {
-        return copyWith(chapter: _clampDouble(chapter - 1.0));
+        return copyWith(
+          chapter: _clampDouble(chapter - 1.0),
+          updatedAt: updatedAt,
+        );
       }
-      return copyWith(page: _clampInt(page - 1));
+      return copyWith(page: _clampInt(page - 1), updatedAt: updatedAt);
     }
-    return copyWith(episode: _clampInt(episode - 1));
+    return copyWith(episode: _clampInt(episode - 1), updatedAt: updatedAt);
   }
 
   String get progressLabel {
