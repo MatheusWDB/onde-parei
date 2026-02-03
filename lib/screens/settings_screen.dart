@@ -8,8 +8,7 @@ import 'package:onde_parei/services/backup_service.dart';
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
-  Future<bool?> _showConfirmImportDialog(BuildContext context) {
-    return showDialog<bool>(
+  Future<bool?> _showConfirmImportDialog(BuildContext context) => showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Confirmar importação'),
@@ -28,7 +27,6 @@ class SettingsScreen extends ConsumerWidget {
         ],
       ),
     );
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,9 +34,9 @@ class SettingsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Configurações',
-          style: const TextStyle(fontWeight: FontWeight.w700),
+          style: TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
       body: SafeArea(
@@ -74,7 +72,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               ListTile(
                 dense: true,
-                title: Text('Mostar Concluídos no Início'),
+                title: const Text('Mostar Concluídos no Início'),
                 trailing: Switch(
                   value: ref.watch(settingsProvider).showCompletedOnDashboard,
                   onChanged: (value) {
@@ -84,7 +82,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               ListTile(
                 dense: true,
-                title: Text('Confirmar Exclusão'),
+                title: const Text('Confirmar Exclusão'),
                 trailing: Switch(
                   value: ref.watch(settingsProvider).confirmBeforeDelete,
                   onChanged: (value) {
@@ -110,18 +108,18 @@ class SettingsScreen extends ConsumerWidget {
                   border: Border.all(color: Theme.of(context).dividerColor),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                padding: EdgeInsets.all(18.0),
+                padding: const EdgeInsets.all(18.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   spacing: 8.0,
                   children: [
-                    Text(
+                    const Text(
                       'Segurança dos Dados',
                       style: TextStyle(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.start,
                     ),
-                    Text(
+                    const Text(
                       'O "Onde Parei?" guarda tudo localmente. Use as opções abaixo para não perder seus dados ao trocar ou formatar o dispositivo.',
                       textAlign: TextAlign.start,
                     ),
@@ -130,19 +128,19 @@ class SettingsScreen extends ConsumerWidget {
                         children: [
                           ListTile(
                             dense: true,
-                            leading: Icon(Icons.download),
-                            title: Text('Baixar backup'),
-                            subtitle: Text('Exportar seus dados'),
+                            leading: const Icon(Icons.download),
+                            title: const Text('Baixar backup'),
+                            subtitle: const Text('Exportar seus dados'),
                             onTap: () async {
                               await backupService.shareBackup();
                             },
                           ),
-                          Divider(),
+                          const Divider(),
                           ListTile(
                             dense: true,
-                            leading: Icon(Icons.upload),
-                            title: Text('Carregar backup'),
-                            subtitle: Text('Substituir dados atuais'),
+                            leading: const Icon(Icons.upload),
+                            title: const Text('Carregar backup'),
+                            subtitle: const Text('Substituir dados atuais'),
                             onTap: () async {
                               final works = await backupService.importBackup(
                                 ref,

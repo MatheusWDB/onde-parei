@@ -36,14 +36,14 @@ class DashboardTab extends ConsumerWidget {
                     vertical: 10.0,
                     horizontal: 10.0,
                   ),
-                  prefixIcon: Icon(Icons.search, size: 20),
+                  prefixIcon: const Icon(Icons.search, size: 20),
                   prefixIconConstraints: const BoxConstraints(
                     minWidth: 32,
                     minHeight: 32,
                   ),
-                  hintText: "Pesquisar...",
+                  hintText: 'Pesquisar...',
                 ),
-                style: TextStyle(),
+                style: const TextStyle(),
                 onChanged: (value) {
                   ref.read(searchQueryProvider.notifier).setQuery(value);
                 },
@@ -99,14 +99,14 @@ class DashboardTab extends ConsumerWidget {
                         size: 45.0,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
-                      Text(
+                      const Text(
                         'Nenhum item salvo.',
                         style: TextStyle(fontStyle: FontStyle.italic),
                       ),
                     ],
                   ),
                 )
-              : ListComponent(wichScreen: WichScreenEnum.dashboard),
+              : const ListComponent(wichScreen: WichScreenEnum.dashboard),
         ),
       ],
     );

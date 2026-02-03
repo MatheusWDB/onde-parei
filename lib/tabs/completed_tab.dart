@@ -28,14 +28,14 @@ class CompletedTab extends ConsumerWidget {
                         size: 45.0,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
-                      Text(
+                      const Text(
                         'Nenhum item concluído.',
                         style: TextStyle(fontStyle: FontStyle.italic),
                       ),
                     ],
                   ),
                 )
-              : ListComponent(wichScreen: WichScreenEnum.archived),
+              : const ListComponent(wichScreen: WichScreenEnum.archived),
         ),
       ],
     );

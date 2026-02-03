@@ -28,26 +28,22 @@ class AppSettings {
     required this.enableBackupReminder,
   });
 
-  factory AppSettings.initial() {
-    return const AppSettings(
+  factory AppSettings.initial() => const AppSettings(
       themeMode: AppThemeMode.system,
       confirmBeforeDelete: true,
       showCompletedOnDashboard: false,
       enableBackupReminder: true,
     );
-  }
 
   AppSettings copyWith({
     AppThemeMode? themeMode,
     bool? confirmBeforeDelete,
     bool? showCompletedOnDashboard,
     bool? enableBackupReminder,
-  }) {
-    return AppSettings(
+  }) => AppSettings(
       themeMode: themeMode ?? this.themeMode,
       confirmBeforeDelete: confirmBeforeDelete ?? this.confirmBeforeDelete,
       showCompletedOnDashboard: showCompletedOnDashboard ?? this.showCompletedOnDashboard,
       enableBackupReminder: enableBackupReminder ?? this.enableBackupReminder,
     );
-  }
 }

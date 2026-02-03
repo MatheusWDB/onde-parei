@@ -24,7 +24,7 @@ class MyApp extends ConsumerWidget {
       themeMode: settings.themeMode.toThemeMode(),
       theme: AppThemes.light,
       darkTheme: AppThemes.dark,
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }

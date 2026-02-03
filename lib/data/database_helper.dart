@@ -27,7 +27,7 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'works.database');
+    final String path = join(await getDatabasesPath(), 'works.database');
 
     return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
@@ -53,13 +53,13 @@ class DatabaseHelper {
       ''';
 
   Future<Work> insertWork(Work work) async {
-    Database dbWorks = await database;
+    final Database dbWorks = await database;
     return work.copyWith(id: await dbWorks.insert(tableWorks, work.toMap()));
   }
 
   Future<Work?> fetchWorkById(int id) async {
-    Database dbWorks = await database;
-    List<Map<String, dynamic>> maps = await dbWorks.query(
+    final Database dbWorks = await database;
+    final List<Map<String, dynamic>> maps = await dbWorks.query(
       tableWorks,
       columns: [
         columnId,
@@ -83,7 +83,7 @@ class DatabaseHelper {
   }
 
   Future<int> deleteWork(int id) async {
-    Database dbWorks = await database;
+    final Database dbWorks = await database;
     return await dbWorks.delete(
       tableWorks,
       where: '$columnId = ?',
@@ -92,7 +92,7 @@ class DatabaseHelper {
   }
 
   Future<int> updateWork(Work work) async {
-    Database dbWorks = await database;
+    final Database dbWorks = await database;
     return await dbWorks.update(
       tableWorks,
       work.toMap(),
@@ -102,7 +102,7 @@ class DatabaseHelper {
   }
 
   Future<List<Work>> fetchAllWorks() async {
-    Database db = await database;
+    final Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       tableWorks,
       orderBy: 'updatedAt DESC',
@@ -111,14 +111,14 @@ class DatabaseHelper {
   }
 
   Future<int?> count() async {
-    Database dbWorks = await database;
+    final Database dbWorks = await database;
     return Sqflite.firstIntValue(
-      await dbWorks.rawQuery("SELECT COUNT(*) FROM $tableWorks"),
+      await dbWorks.rawQuery('SELECT COUNT(*) FROM $tableWorks'),
     );
   }
 
   Future<void> close() async {
-    Database dbWorks = await database;
+    final Database dbWorks = await database;
     await dbWorks.close();
   }
 }

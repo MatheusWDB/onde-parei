@@ -6,10 +6,8 @@ part 'sort_provider.g.dart';
 @riverpod
 class SortConfig extends _$SortConfig {
   @override
-  ({SortField field, SortDirection direction}) build() {
-    return (field: SortField.title, direction: SortDirection.asc
+  ({SortField field, SortDirection direction}) build() => (field: SortField.title, direction: SortDirection.asc
     );
-  }
 
   void changeField(SortField field) {
     state = (field: field, direction: state.direction);

@@ -10,7 +10,7 @@ import 'package:onde_parei/providers/settings_provider.dart';
 class ListComponent extends ConsumerWidget {
   final WichScreenEnum wichScreen;
 
-  const ListComponent({super.key, required this.wichScreen});
+  const ListComponent({required this.wichScreen, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,11 +28,9 @@ class ListComponent extends ConsumerWidget {
     return ListView.separated(
       itemCount: condition ? worksBuilder.length + 1 : worksBuilder.length,
       separatorBuilder: (_, _) => const SizedBox(height: 6),
-      itemBuilder: (context, index) {
-        return index == worksBuilder.length && condition
-            ? SizedBox(height: 45.0)
-            : CardComponent(work: worksBuilder[index]);
-      },
+      itemBuilder: (context, index) => index == worksBuilder.length && condition
+            ? const SizedBox(height: 45.0)
+            : CardComponent(work: worksBuilder[index]),
     );
   }
 }

@@ -15,9 +15,9 @@ class Work {
   final DateTime? updatedAt;
 
   Work({
-    this.id,
     required this.title,
     required this.type,
+    this.id,
     this.season = 1,
     this.episode = 1,
     this.chapter = 1.0,
@@ -69,7 +69,7 @@ class Work {
 
       return "Cap. $chapterLabel${type == TypeEnum.book ? " • Pág. $page" : ""}";
     }
-    return "Temp. $season • Ep. $episode";
+    return 'Temp. $season • Ep. $episode';
   }
 
   Map<String, dynamic> toMap() {
@@ -93,8 +93,7 @@ class Work {
     return map;
   }
 
-  factory Work.fromMap(Map<String, dynamic> map) {
-    return Work(
+  factory Work.fromMap(Map<String, dynamic> map) => Work(
       id: map['id'] as int?,
       title: map['title'] as String? ?? 'Sem título',
       type: map['type'] is int?
@@ -112,7 +111,6 @@ class Work {
           ? DateTime.parse(map['updatedAt'])
           : null,
     );
-  }
 
   String toJson() {
     final map = toMap();
@@ -133,8 +131,7 @@ class Work {
     bool? isFinished,
     DateTime? createdAt,
     DateTime? updatedAt,
-  }) {
-    return Work(
+  }) => Work(
       id: id ?? this.id,
       title: title ?? this.title,
       type: type ?? this.type,
@@ -146,13 +143,10 @@ class Work {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
     );
-  }
 
   int _clampInt(int value) => value < 0 ? 0 : value;
   double _clampDouble(double value) => value < 0 ? 0 : value;
 
   @override
-  String toString() {
-    return 'Work(id: $id, title: $title, type: ${type.displayName}, season: $season, episode: $episode, chapter: $chapter, page: $page, isFinished: $isFinished, createdAt: $createdAt, updatedAt: $updatedAt)';
-  }
+  String toString() => 'Work(id: $id, title: $title, type: ${type.displayName}, season: $season, episode: $episode, chapter: $chapter, page: $page, isFinished: $isFinished, createdAt: $createdAt, updatedAt: $updatedAt)';
 }

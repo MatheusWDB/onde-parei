@@ -15,19 +15,15 @@ enum TypeEnum {
   bool get isVideo => this == TypeEnum.anime || this == TypeEnum.series || this == TypeEnum.novel;
   bool get isReading => !isVideo;
 
-  static TypeEnum fromCode(int code) {
-    return TypeEnum.values.firstWhere(
+  static TypeEnum fromCode(int code) => TypeEnum.values.firstWhere(
       (e) => e.code == code,
       orElse: () => TypeEnum.series,
     );
-  }
 
-  static TypeEnum fromName(String name) {
-    return TypeEnum.values.firstWhere(
+  static TypeEnum fromName(String name) => TypeEnum.values.firstWhere(
       (e) => e.name == name,
       orElse: () => TypeEnum.series,
     );
-  }
 
   @override
   String toString() => name;

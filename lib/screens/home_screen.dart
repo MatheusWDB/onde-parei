@@ -15,13 +15,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _activeMenu = 0;
 
-  String _title() {
-    return _activeMenu == 0 ? "Onde Parei?" : "Concluídos";
-  }
+  String _title() => _activeMenu == 0 ? 'Onde Parei?' : 'Concluídos';
 
-  Widget _buildTap() {
-    return _activeMenu == 0 ? DashboardTab() : CompletedTab();
-  }
+  Widget _buildTap() => _activeMenu == 0 ? const DashboardTab() : const CompletedTab();
 
   void _changeMenu(int value) {
     HapticFeedback.selectionClick();
@@ -32,10 +28,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
-        actionsPadding: EdgeInsets.all(8.0),
+        actionsPadding: const EdgeInsets.all(8.0),
         actions: [
           IconButton(
             style: IconButton.styleFrom(elevation: 2.0),
@@ -43,10 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
               HapticFeedback.selectionClick();
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingsScreen()),
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
               );
             },
-            icon: Icon(Icons.settings_outlined),
+            icon: const Icon(Icons.settings_outlined),
           ),
         ],
         title: Text(
@@ -75,13 +70,13 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 45.0,
               child: FittedBox(
                 child: FloatingActionButton(
-                  shape: CircleBorder(),
+                  shape: const CircleBorder(),
                   onPressed: () {
                     HapticFeedback.selectionClick();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AddOrUpdateWorkScreen(),
+                        builder: (context) => const AddOrUpdateWorkScreen(),
                       ),
                     );
                   },
@@ -92,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
           : null,
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.all(18.0),
+          padding: const EdgeInsets.all(18.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [Expanded(child: _buildTap())],
@@ -100,5 +95,4 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
 }

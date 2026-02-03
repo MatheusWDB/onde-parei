@@ -10,7 +10,7 @@ import 'package:onde_parei/screens/add_or_update_work_screen.dart';
 class CardComponent extends ConsumerWidget {
   final Work work;
 
-  const CardComponent({super.key, required this.work});
+  const CardComponent({required this.work, super.key});
 
   void _increase(WidgetRef ref) {
     ref.read(workListProvider.notifier).updateWork(work.increment());
@@ -20,8 +20,7 @@ class CardComponent extends ConsumerWidget {
     ref.read(workListProvider.notifier).updateWork(work.decrement());
   }
 
-  Future<bool?> _showConfirmDelete(BuildContext context) {
-    return showDialog<bool>(
+  Future<bool?> _showConfirmDelete(BuildContext context) => showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Confirmar Exclusão'),
@@ -40,7 +39,6 @@ class CardComponent extends ConsumerWidget {
         ],
       ),
     );
-  }
 
   void _showActions(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
@@ -71,8 +69,8 @@ class CardComponent extends ConsumerWidget {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.delete),
-                title: Text('Excluir'),
+                leading: const Icon(Icons.delete),
+                title: const Text('Excluir'),
                 onTap: () async {
                   if (settings.confirmBeforeDelete) {
                     final bool? confirm = await _showConfirmDelete(context);
@@ -86,8 +84,8 @@ class CardComponent extends ConsumerWidget {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.close),
-                title: Text('Cancelar'),
+                leading: const Icon(Icons.close),
+                title: const Text('Cancelar'),
                 onTap: () => Navigator.pop(context),
               ),
             ],
@@ -99,13 +97,7 @@ class CardComponent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    IconData? icon;
-
-    if (work.isReadingType) {
-      icon = Icons.menu_book_sharp;
-    } else {
-      icon = Icons.tv;
-    }
+    final IconData icon = work.isReadingType ? Icons.menu_book_sharp : Icons.tv;
 
     return InkWell(
       borderRadius: BorderRadius.circular(16),
@@ -176,7 +168,7 @@ class CardComponent extends ConsumerWidget {
                 ),
               ),
               work.isFinished
-                  ? Row(
+                  ? const Row(
                       spacing: 8,
                       children: [Text('Conclúido'), Icon(Icons.verified)],
                     )

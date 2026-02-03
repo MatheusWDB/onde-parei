@@ -87,8 +87,7 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: Text(
           widget.work == null ? 'Nova Obra' : 'Editar',
@@ -111,13 +110,13 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Título da Obra'),
+                        const Text('Título da Obra'),
                         TextFormField(
                           controller: _titleController,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: 'Ex: Harry Potter',
                             errorMaxLines: 2,
-                            border: const OutlineInputBorder(
+                            border: OutlineInputBorder(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(6),
                               ),
@@ -136,7 +135,7 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Categoria'),
+                        const Text('Categoria'),
                         DropdownMenu<TypeEnum>(
                           initialSelection: _selectedType,
                           width: double.infinity,
@@ -182,7 +181,7 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
                                       Radius.circular(6),
                                     ),
                                   ),
-                                  hintStyle: TextStyle(fontSize: 14.0),
+                                  hintStyle: const TextStyle(fontSize: 14.0),
                                 ),
                                 keyboardType: TextInputType.number,
                               ),
@@ -212,7 +211,7 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
                                         Radius.circular(6),
                                       ),
                                     ),
-                                    hintStyle: TextStyle(fontSize: 14.0),
+                                    hintStyle: const TextStyle(fontSize: 14.0),
                                   ),
                                   keyboardType: TextInputType.number,
                                 ),
@@ -227,7 +226,7 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
               ),
               ElevatedButton(
                 onPressed: _save,
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [Icon(Icons.save), Text('Guardar Alterações')],
                 ),
@@ -237,5 +236,4 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
         ),
       ),
     );
-  }
 }
