@@ -55,9 +55,13 @@ class CardComponent extends ConsumerWidget {
             children: [
               ListTile(
                 leading: Icon(
-                  work.isFinished ? Icons.unarchive : Icons.archive,
+                  work.isFinished ? Icons.undo : Icons.check_circle_outline,
                 ),
-                title: Text(work.isFinished ? 'Desarquivar' : 'Arquivar'),
+                title: Text(
+                  work.isFinished
+                      ? 'Marcar como não concluído'
+                      : 'Marcar como concluído',
+                ),
                 onTap: () {
                   ref
                       .read(workListProvider.notifier)
