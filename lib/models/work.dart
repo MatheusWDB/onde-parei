@@ -94,23 +94,23 @@ class Work {
   }
 
   factory Work.fromMap(Map<String, dynamic> map) => Work(
-      id: map['id'] as int?,
-      title: map['title'] as String? ?? 'Sem título',
-      type: map['type'] is int?
-          ? TypeEnum.fromCode(map['type'])
-          : TypeEnum.fromName(map['type'].toString()),
-      season: map['season'] as int? ?? 0,
-      episode: map['episode'] as int? ?? 0,
-      chapter: (map['chapter'] ?? 0).toDouble(),
-      page: map['page'] as int? ?? 0,
-      isFinished: map['isFinished'] == 1 || map['isFinished'] == true,
-      createdAt: map['createdAt'] != null
-          ? DateTime.parse(map['createdAt'])
-          : null,
-      updatedAt: map['updatedAt'] != null
-          ? DateTime.parse(map['updatedAt'])
-          : null,
-    );
+    id: map['id'] as int?,
+    title: map['title'] as String? ?? 'Sem título',
+    type: map['type'] is int?
+        ? TypeEnum.fromCode(map['type'])
+        : TypeEnum.fromName(map['type'].toString()),
+    season: map['season'] as int? ?? 0,
+    episode: map['episode'] as int? ?? 0,
+    chapter: (map['chapter'] as num?)?.toDouble() ?? 0,
+    page: map['page'] as int? ?? 0,
+    isFinished: map['isFinished'] == 1 || map['isFinished'] == true,
+    createdAt: map['createdAt'] != null
+        ? DateTime.parse(map['createdAt'])
+        : null,
+    updatedAt: map['updatedAt'] != null
+        ? DateTime.parse(map['updatedAt'])
+        : null,
+  );
 
   String toJson() {
     final map = toMap();
@@ -132,21 +132,22 @@ class Work {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => Work(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      type: type ?? this.type,
-      season: season ?? this.season,
-      episode: episode ?? this.episode,
-      chapter: chapter ?? this.chapter,
-      page: page ?? this.page,
-      isFinished: isFinished ?? this.isFinished,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? DateTime.now(),
-    );
+    id: id ?? this.id,
+    title: title ?? this.title,
+    type: type ?? this.type,
+    season: season ?? this.season,
+    episode: episode ?? this.episode,
+    chapter: chapter ?? this.chapter,
+    page: page ?? this.page,
+    isFinished: isFinished ?? this.isFinished,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? DateTime.now(),
+  );
 
   int _clampInt(int value) => value < 0 ? 0 : value;
   double _clampDouble(double value) => value < 0 ? 0 : value;
 
   @override
-  String toString() => 'Work(id: $id, title: $title, type: ${type.displayName}, season: $season, episode: $episode, chapter: $chapter, page: $page, isFinished: $isFinished, createdAt: $createdAt, updatedAt: $updatedAt)';
+  String toString() =>
+      'Work(id: $id, title: $title, type: ${type.displayName}, season: $season, episode: $episode, chapter: $chapter, page: $page, isFinished: $isFinished, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
