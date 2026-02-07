@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:onde_parei/models/app_settings.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/providers/settings_provider.dart';
@@ -21,24 +22,24 @@ class CardComponent extends ConsumerWidget {
   }
 
   Future<bool?> _showConfirmDelete(BuildContext context) => showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirmar Exclusão'),
-        content: const Text(
-          'Isso irá apagar permanentemente o item.\nDeseja continuar?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Confirmar'),
-          ),
-        ],
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Confirmar Exclusão'),
+      content: const Text(
+        'Isso irá apagar permanentemente o item.\nDeseja continuar?',
       ),
-    );
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text('Cancelar'),
+        ),
+        ElevatedButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Confirmar'),
+        ),
+      ],
+    ),
+  );
 
   void _showActions(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
@@ -53,7 +54,7 @@ class CardComponent extends ConsumerWidget {
             children: [
               ListTile(
                 leading: Icon(
-                  work.isFinished ? Icons.undo : Icons.check_circle_outline,
+                  work.isFinished ? LucideIcons.undo2 : LucideIcons.circleCheckBig,
                 ),
                 title: Text(
                   work.isFinished
@@ -69,7 +70,7 @@ class CardComponent extends ConsumerWidget {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.delete),
+                leading: const Icon(LucideIcons.trash2),
                 title: const Text('Excluir'),
                 onTap: () async {
                   if (settings.confirmBeforeDelete) {
@@ -84,7 +85,7 @@ class CardComponent extends ConsumerWidget {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.close),
+                leading: const Icon(LucideIcons.x),
                 title: const Text('Cancelar'),
                 onTap: () => Navigator.pop(context),
               ),
@@ -97,7 +98,9 @@ class CardComponent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final IconData icon = work.isReadingType ? Icons.menu_book_sharp : Icons.tv;
+    final IconData icon = work.isReadingType
+        ? LucideIcons.bookOpen
+        : LucideIcons.tv;
 
     return InkWell(
       borderRadius: BorderRadius.circular(16),
@@ -170,7 +173,10 @@ class CardComponent extends ConsumerWidget {
               work.isFinished
                   ? const Row(
                       spacing: 8,
-                      children: [Text('Conclúido'), Icon(Icons.verified)],
+                      children: [
+                        Text('Conclúido'),
+                        Icon(LucideIcons.circleCheck),
+                      ],
                     )
                   : Row(
                       spacing: 10.0,
@@ -185,7 +191,7 @@ class CardComponent extends ConsumerWidget {
                               return _decrement(ref);
                             },
                             icon: Icon(
-                              Icons.remove,
+                              LucideIcons.minus,
                               color: Theme.of(context).colorScheme.surface,
                             ),
                             style: IconButton.styleFrom(
@@ -206,7 +212,7 @@ class CardComponent extends ConsumerWidget {
                               return _increase(ref);
                             },
                             icon: Icon(
-                              Icons.add,
+                              LucideIcons.plus,
                               color: Theme.of(context).colorScheme.surface,
                             ),
                             style: IconButton.styleFrom(

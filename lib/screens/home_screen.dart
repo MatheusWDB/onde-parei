@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:onde_parei/screens/add_or_update_work_screen.dart';
 import 'package:onde_parei/screens/settings_screen.dart';
 import 'package:onde_parei/tabs/completed_tab.dart';
@@ -17,7 +18,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String _title() => _activeMenu == 0 ? 'Onde Parei?' : 'Concluídos';
 
-  Widget _buildTap() => _activeMenu == 0 ? const DashboardTab() : const CompletedTab();
+  Widget _buildTap() =>
+      _activeMenu == 0 ? const DashboardTab() : const CompletedTab();
 
   void _changeMenu(int value) {
     HapticFeedback.selectionClick();
@@ -29,70 +31,73 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        actionsPadding: const EdgeInsets.all(8.0),
-        actions: [
-          IconButton(
-            style: IconButton.styleFrom(elevation: 2.0),
-            onPressed: () {
-              HapticFeedback.selectionClick();
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
-              );
-            },
-            icon: const Icon(Icons.settings_outlined),
-          ),
-        ],
-        title: Text(
-          _title(),
-          style: const TextStyle(fontWeight: FontWeight.w700),
+    appBar: AppBar(
+      actionsPadding: const EdgeInsets.all(8.0),
+      actions: [
+        IconButton(
+          style: IconButton.styleFrom(elevation: 2.0),
+          onPressed: () {
+            HapticFeedback.selectionClick();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SettingsScreen()),
+            );
+          },
+          icon: const Icon(LucideIcons.settings),
         ),
+      ],
+      title: Text(
+        _title(),
+        style: const TextStyle(fontWeight: FontWeight.w700),
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _activeMenu,
-        onDestinationSelected: _changeMenu,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.grid_view_outlined),
-            label: 'Início',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.archive_outlined),
-            label: 'Concluídos',
-          ),
-        ],
-      ),
-      floatingActionButton: _activeMenu == 0
-          ? Container(
-              alignment: Alignment.bottomRight,
-              width: 45.0,
-              height: 45.0,
-              child: FittedBox(
-                child: FloatingActionButton(
-                  shape: const CircleBorder(),
-                  onPressed: () {
-                    HapticFeedback.selectionClick();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AddOrUpdateWorkScreen(),
-                      ),
-                    );
-                  },
-                  child: const Icon(Icons.add, fontWeight: FontWeight.bold),
+    ),
+    bottomNavigationBar: NavigationBar(
+      selectedIndex: _activeMenu,
+      onDestinationSelected: _changeMenu,
+      destinations: const [
+        NavigationDestination(
+          icon: Icon(LucideIcons.layoutGrid),
+          label: 'Início',
+        ),
+        NavigationDestination(
+          icon: Icon(LucideIcons.archive),
+          label: 'Concluídos',
+        ),
+      ],
+    ),
+    floatingActionButton: _activeMenu == 0
+        ? Container(
+            alignment: Alignment.bottomRight,
+            width: 45.0,
+            height: 45.0,
+            child: FittedBox(
+              child: FloatingActionButton(
+                shape: const CircleBorder(),
+                onPressed: () {
+                  HapticFeedback.selectionClick();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddOrUpdateWorkScreen(),
+                    ),
+                  );
+                },
+                child: const Icon(
+                  LucideIcons.plus,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            )
-          : null,
-      body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.all(18.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [Expanded(child: _buildTap())],
-          ),
+            ),
+          )
+        : null,
+    body: SafeArea(
+      child: Container(
+        padding: const EdgeInsets.all(18.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [Expanded(child: _buildTap())],
         ),
       ),
-    );
+    ),
+  );
 }

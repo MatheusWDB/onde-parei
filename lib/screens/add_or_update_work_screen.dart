@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:onde_parei/enums/type_enum.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/providers/work_list_provider.dart';
@@ -228,7 +229,7 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
                 onPressed: _save,
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Icon(Icons.save), Text('Guardar Alterações')],
+                  children: [Icon(LucideIcons.save), Text('Guardar Alterações')],
                 ),
               ),
             ],

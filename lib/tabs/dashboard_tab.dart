@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:onde_parei/components/list_component.dart';
-import 'package:onde_parei/enums/sort_enum.dart';
 import 'package:onde_parei/enums/home_tab_enum.dart';
+import 'package:onde_parei/enums/sort_enum.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/providers/search_provider.dart';
 import 'package:onde_parei/providers/settings_provider.dart';
@@ -15,6 +16,7 @@ class DashboardTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final List<Work> works = ref.watch(sortedWorksProvider);
     final sort = ref.watch(sortConfigProvider);
+
     final sortNotifier = ref.read(sortConfigProvider.notifier);
     final settingsNotifier = ref.read(settingsProvider.notifier);
     final searchNotifier = ref.read(searchQueryProvider.notifier);
@@ -42,7 +44,7 @@ class DashboardTab extends ConsumerWidget {
                     vertical: 10.0,
                     horizontal: 10.0,
                   ),
-                  prefixIcon: const Icon(Icons.search, size: 20),
+                  prefixIcon: const Icon(LucideIcons.search, size: 20),
                   prefixIconConstraints: const BoxConstraints(
                     minWidth: 32,
                     minHeight: 32,
@@ -86,8 +88,8 @@ class DashboardTab extends ConsumerWidget {
                   },
                   icon: Icon(
                     sort.direction == SortDirection.asc
-                        ? Icons.arrow_upward
-                        : Icons.arrow_downward,
+                        ? LucideIcons.arrowUp
+                        : LucideIcons.arrowDown,
                   ),
                 ),
               ],
@@ -101,7 +103,7 @@ class DashboardTab extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        Icons.menu_book,
+                        LucideIcons.bookOpenText,
                         size: 45.0,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),

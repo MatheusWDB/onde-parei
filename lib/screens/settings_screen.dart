@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:onde_parei/enums/app_theme_mode_enum.dart';
 import 'package:onde_parei/providers/settings_provider.dart';
 import 'package:onde_parei/providers/work_list_provider.dart';
@@ -117,7 +118,7 @@ class SettingsScreen extends ConsumerWidget {
                         children: [
                           ListTile(
                             dense: true,
-                            leading: const Icon(Icons.download),
+                            leading: const Icon(LucideIcons.download),
                             title: const Text('Baixar backup'),
                             subtitle: const Text('Exportar seus dados'),
                             onTap: () async {
@@ -127,7 +128,7 @@ class SettingsScreen extends ConsumerWidget {
                           const Divider(),
                           ListTile(
                             dense: true,
-                            leading: const Icon(Icons.upload),
+                            leading: const Icon(LucideIcons.upload),
                             title: const Text('Carregar backup'),
                             subtitle: const Text('Substituir dados atuais'),
                             onTap: () async {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:onde_parei/components/list_component.dart';
 import 'package:onde_parei/enums/home_tab_enum.dart';
 import 'package:onde_parei/models/work.dart';
@@ -24,7 +25,7 @@ class CompletedTab extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        Icons.menu_book,
+                        LucideIcons.bookOpenText,
                         size: 45.0,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
