@@ -158,7 +158,8 @@ class SettingsScreen extends ConsumerWidget {
                             title: const Text('Baixar backup'),
                             subtitle: const Text('Exportar seus dados'),
                             onTap: () async =>
-                                _showBackupActions(context, backupService),
+                                await backupService.shareBackup(),
+                                
                           ),
                           const Divider(),
                           ListTile(
