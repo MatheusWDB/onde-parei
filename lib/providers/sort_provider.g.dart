@@ -50,7 +50,7 @@ final class SortConfigProvider
   }
 }
 
-String _$sortConfigHash() => r'ff87c63e98b2e5ccfd9f72c658dca850a0f549dc';
+String _$sortConfigHash() => r'350cecd998b22772b958128ecde9f647407124a8';
 
 abstract class _$SortConfig
     extends $Notifier<({SortDirection direction, SortField field})> {

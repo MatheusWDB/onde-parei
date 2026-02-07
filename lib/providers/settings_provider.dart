@@ -24,7 +24,14 @@ class Settings extends _$Settings {
 
     _loadFromStorage();
 
-    return AppSettings.initial();
+    return const AppSettings(
+      themeMode: AppThemeModeEnum.system,
+      confirmBeforeDelete: true,
+      showCompletedOnDashboard: false,
+      enableBackupReminder: false,
+      sortDirection: SortDirection.asc,
+      sortField: SortField.title,
+    );
   }
 
   Future<void> _loadFromStorage() async {
