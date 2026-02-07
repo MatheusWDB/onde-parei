@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:onde_parei/components/list_component.dart';
-import 'package:onde_parei/enums/wich_screen_enum.dart';
+import 'package:onde_parei/enums/home_tab_enum.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/providers/search_provider.dart';
 
@@ -35,7 +35,7 @@ class CompletedTab extends ConsumerWidget {
                     ],
                   ),
                 )
-              : const ListComponent(wichScreen: WichScreenEnum.archived),
+              : const ListComponent(homeTab: HomeTabEnum.completed),
         ),
       ],
     );

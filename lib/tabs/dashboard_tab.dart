@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:onde_parei/components/list_component.dart';
 import 'package:onde_parei/enums/sort_enum.dart';
-import 'package:onde_parei/enums/wich_screen_enum.dart';
+import 'package:onde_parei/enums/home_tab_enum.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/providers/search_provider.dart';
 import 'package:onde_parei/providers/sort_provider.dart';
@@ -58,20 +58,14 @@ class DashboardTab extends ConsumerWidget {
                   onChanged: (value) {
                     ref.read(sortConfigProvider.notifier).changeField(value!);
                   },
-                  items: const [
-                    DropdownMenuItem(
-                      value: SortField.updatedAt,
-                      child: Text('Atualização'),
-                    ),
-                    DropdownMenuItem(
-                      value: SortField.createdAt,
-                      child: Text('Criação'),
-                    ),
-                    DropdownMenuItem(
-                      value: SortField.title,
-                      child: Text('Título'),
-                    ),
-                  ],
+                  items: SortField.values
+                      .map(
+                        (e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(e.displayName),
+                        ),
+                      )
+                      .toList(),
                 ),
                 IconButton(
                   iconSize: 20.0,
@@ -106,7 +100,7 @@ class DashboardTab extends ConsumerWidget {
                     ],
                   ),
                 )
-              : const ListComponent(wichScreen: WichScreenEnum.dashboard),
+              : const ListComponent(homeTab: HomeTabEnum.dashboard),
         ),
       ],
     );

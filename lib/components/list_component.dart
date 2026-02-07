@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:onde_parei/components/card_component.dart';
-import 'package:onde_parei/enums/wich_screen_enum.dart';
+import 'package:onde_parei/enums/home_tab_enum.dart';
 import 'package:onde_parei/models/app_settings.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/providers/search_provider.dart';
 import 'package:onde_parei/providers/settings_provider.dart';
 
 class ListComponent extends ConsumerWidget {
-  final WichScreenEnum wichScreen;
+  final HomeTabEnum homeTab;
 
-  const ListComponent({required this.wichScreen, super.key});
+  const ListComponent({required this.homeTab, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final List<Work> works = ref.watch(sortedWorksProvider);
     final AppSettings settings = ref.watch(settingsProvider);
 
-    final bool condition = wichScreen == WichScreenEnum.dashboard;
+    final bool condition = homeTab == HomeTabEnum.dashboard;
 
     final worksBuilder = condition
         ? settings.showCompletedOnDashboard

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:onde_parei/models/app_settings.dart';
+import 'package:onde_parei/enums/app_theme_mode_enum.dart';
 import 'package:onde_parei/providers/settings_provider.dart';
 import 'package:onde_parei/providers/work_list_provider.dart';
 import 'package:onde_parei/services/backup_service.dart';
@@ -8,25 +8,27 @@ import 'package:onde_parei/services/backup_service.dart';
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
-  Future<bool?> _showConfirmImportDialog(BuildContext context) => showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirmar importação'),
-        content: const Text(
-          'Isso irá apagar todos os dados atuais e substituí-los pelo backup.\nDeseja continuar?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Confirmar'),
-          ),
-        ],
+  Future<bool?> _showConfirmImportDialog(
+    BuildContext context,
+  ) => showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Confirmar importação'),
+      content: const Text(
+        'Isso irá apagar todos os dados atuais e substituí-los pelo backup.\nDeseja continuar?',
       ),
-    );
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text('Cancelar'),
+        ),
+        ElevatedButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Confirmar'),
+        ),
+      ],
+    ),
+  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -47,27 +49,14 @@ class SettingsScreen extends ConsumerWidget {
               ListTile(
                 dense: true,
                 title: const Text('Tema'),
-                trailing: DropdownButton<AppThemeMode>(
+                trailing: DropdownButton<AppThemeModeEnum>(
                   value: ref.watch(settingsProvider).themeMode,
                   onChanged: (value) {
                     if (value != null) {
                       ref.read(settingsProvider.notifier).setTheme(value);
                     }
                   },
-                  items: const [
-                    DropdownMenuItem(
-                      value: AppThemeMode.system,
-                      child: Text('Sistema'),
-                    ),
-                    DropdownMenuItem(
-                      value: AppThemeMode.light,
-                      child: Text('Claro'),
-                    ),
-                    DropdownMenuItem(
-                      value: AppThemeMode.dark,
-                      child: Text('Escuro'),
-                    ),
-                  ],
+                  items: AppThemeModeEnum.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
                 ),
               ),
               ListTile(

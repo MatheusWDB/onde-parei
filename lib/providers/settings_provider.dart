@@ -1,3 +1,4 @@
+import 'package:onde_parei/enums/app_theme_mode_enum.dart';
 import 'package:onde_parei/models/app_settings.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,7 +21,7 @@ class Settings extends _$Settings {
     _loadFromStorage();
 
     return const AppSettings(
-      themeMode: AppThemeMode.system,
+      themeMode: AppThemeModeEnum.system,
       confirmBeforeDelete: true,
       showCompletedOnDashboard: false,
       enableBackupReminder: false,
@@ -37,7 +38,7 @@ class Settings extends _$Settings {
 
     state = state.copyWith(
       themeMode: themeIndex != null
-          ? AppThemeMode.values[themeIndex]
+          ? AppThemeModeEnum.values[themeIndex]
           : state.themeMode,
       confirmBeforeDelete: confirm ?? state.confirmBeforeDelete,
       showCompletedOnDashboard: showCompleted ?? state.showCompletedOnDashboard,
@@ -45,7 +46,7 @@ class Settings extends _$Settings {
     );
   }
 
-  Future<void> setTheme(AppThemeMode mode) async {
+  Future<void> setTheme(AppThemeModeEnum mode) async {
     state = state.copyWith(themeMode: mode);
 
     await _prefs.setInt(_themeKey, mode.index);
