@@ -31,9 +31,36 @@ class SettingsScreen extends ConsumerWidget {
     ),
   );
 
+  void _showBackupActions(BuildContext context, BackupService backupService) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(LucideIcons.folderDown),
+            title: const Text('Salvar em pasta'),
+            onTap: () async {
+              Navigator.pop(context);
+              await backupService.saveBackupToFolder();
+            },
+          ),
+          ListTile(
+            leading: const Icon(LucideIcons.share2),
+            title: const Text('Compartilhar'),
+            onTap: () async {
+              Navigator.pop(context);
+              await backupService.shareBackup();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final backupService = BackupService();
+    final BackupService backupService = BackupService();
 
     return Scaffold(
       appBar: AppBar(
@@ -57,7 +84,14 @@ class SettingsScreen extends ConsumerWidget {
                       ref.read(settingsProvider.notifier).setTheme(value);
                     }
                   },
-                  items: AppThemeModeEnum.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
+                  items: AppThemeModeEnum.values
+                      .map(
+                        (e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(e.displayName),
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
               ListTile(
@@ -121,9 +155,8 @@ class SettingsScreen extends ConsumerWidget {
                             leading: const Icon(LucideIcons.download),
                             title: const Text('Baixar backup'),
                             subtitle: const Text('Exportar seus dados'),
-                            onTap: () async {
-                              await backupService.shareBackup();
-                            },
+                            onTap: () async =>
+                                _showBackupActions(context, backupService),
                           ),
                           const Divider(),
                           ListTile(

@@ -11,23 +11,33 @@ import 'package:share_plus/share_plus.dart';
 class BackupService {
   final WorkRepository _repository = WorkRepository();
 
+  Future<void> shareBackup() async {
+    final file = await exportBackup();
+    await SharePlus.instance.share(ShareParams(files: [XFile(file.path)]));
+  }
+
+  Future<void> saveBackupToFolder() async {
+    final file = await exportBackup();
+
+    final selectedDir = await FilePicker.platform.getDirectoryPath();
+    if (selectedDir == null) return;
+
+    final newFile = File('$selectedDir/onde_parei_backup.json');
+    await file.copy(newFile.path);
+  }
+
   Future<File> exportBackup() async {
     final works = await _repository.findAll();
 
     final jsonList = works.map((w) => w.toJson()).toList();
     final jsonString = jsonEncode(jsonList);
 
-    final dir = await getApplicationDocumentsDirectory();
+    final dir = await getTemporaryDirectory();
     final file = File('${dir.path}/onde_parei_backup.json');
 
     await file.writeAsString(jsonString);
 
     return file;
-  }
-
-  Future<void> shareBackup() async {
-    final file = await exportBackup();
-    await SharePlus.instance.share(ShareParams(files: [XFile(file.path)]));
   }
 
   Future<List<Work>?> importBackup(WidgetRef ref) async {
