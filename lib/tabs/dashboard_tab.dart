@@ -5,6 +5,7 @@ import 'package:onde_parei/enums/sort_enum.dart';
 import 'package:onde_parei/enums/home_tab_enum.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/providers/search_provider.dart';
+import 'package:onde_parei/providers/settings_provider.dart';
 import 'package:onde_parei/providers/sort_provider.dart';
 
 class DashboardTab extends ConsumerWidget {
@@ -13,6 +14,11 @@ class DashboardTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final List<Work> works = ref.watch(sortedWorksProvider);
+    final sort = ref.watch(sortConfigProvider);
+    final sortNotifier = ref.read(sortConfigProvider.notifier);
+    final settingsNotifier = ref.read(settingsProvider.notifier);
+    final searchNotifier = ref.read(searchQueryProvider.notifier);
+
     final List<Work> activeWorks = works
         .where((work) => !work.isFinished)
         .toList();
@@ -45,7 +51,7 @@ class DashboardTab extends ConsumerWidget {
                 ),
                 style: const TextStyle(),
                 onChanged: (value) {
-                  ref.read(searchQueryProvider.notifier).setQuery(value);
+                  searchNotifier.setQuery(value);
                 },
               ),
             ),
@@ -53,10 +59,11 @@ class DashboardTab extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 DropdownButton<SortField>(
-                  value: ref.watch(sortConfigProvider).field,
+                  value: sort.field,
                   iconSize: 0.0,
                   onChanged: (value) {
-                    ref.read(sortConfigProvider.notifier).changeField(value!);
+                    sortNotifier.changeField(value!);
+                    settingsNotifier.setSortField(value);
                   },
                   items: SortField.values
                       .map(
@@ -70,10 +77,15 @@ class DashboardTab extends ConsumerWidget {
                 IconButton(
                   iconSize: 20.0,
                   onPressed: () {
-                    ref.read(sortConfigProvider.notifier).toggleDirection();
+                    final newDirection = sort.direction == SortDirection.asc
+                        ? SortDirection.desc
+                        : SortDirection.asc;
+
+                    sortNotifier.toggleDirection();
+                    settingsNotifier.setSortDirection(newDirection);
                   },
                   icon: Icon(
-                    ref.watch(sortConfigProvider).direction == SortDirection.asc
+                    sort.direction == SortDirection.asc
                         ? Icons.arrow_upward
                         : Icons.arrow_downward,
                   ),
