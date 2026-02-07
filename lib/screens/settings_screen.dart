@@ -34,26 +34,28 @@ class SettingsScreen extends ConsumerWidget {
   void _showBackupActions(BuildContext context, BackupService backupService) {
     showModalBottomSheet(
       context: context,
-      builder: (_) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: const Icon(LucideIcons.folderDown),
-            title: const Text('Salvar em pasta'),
-            onTap: () async {
-              Navigator.pop(context);
-              await backupService.saveBackupToFolder();
-            },
-          ),
-          ListTile(
-            leading: const Icon(LucideIcons.share2),
-            title: const Text('Compartilhar'),
-            onTap: () async {
-              Navigator.pop(context);
-              await backupService.shareBackup();
-            },
-          ),
-        ],
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(LucideIcons.folderDown),
+              title: const Text('Salvar em pasta'),
+              onTap: () async {
+                Navigator.pop(context);
+                await backupService.saveBackupToFolder();
+              },
+            ),
+            ListTile(
+              leading: const Icon(LucideIcons.share2),
+              title: const Text('Compartilhar'),
+              onTap: () async {
+                Navigator.pop(context);
+                await backupService.shareBackup();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
