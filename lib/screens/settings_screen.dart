@@ -1,3 +1,4 @@
+import 'package:alert_info/alert_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -43,7 +44,23 @@ class SettingsScreen extends ConsumerWidget {
               title: const Text('Salvar em pasta'),
               onTap: () async {
                 Navigator.pop(context);
-                await backupService.saveBackupToFolder();
+                try {
+                  await backupService.saveBackupToAppFolder();
+
+                  if (!context.mounted) return;
+                  AlertInfo.show(
+                    context: context,
+                    text: 'Backup salvo com sucesso!',
+                    typeInfo: TypeInfo.success,
+                  );
+                } catch (e) {
+                  if (!context.mounted) return;
+                  AlertInfo.show(
+                    context: context,
+                    text: 'Erro ao salvar backup',
+                    typeInfo: TypeInfo.error,
+                  );
+                }
               },
             ),
             ListTile(
@@ -51,7 +68,110 @@ class SettingsScreen extends ConsumerWidget {
               title: const Text('Compartilhar'),
               onTap: () async {
                 Navigator.pop(context);
-                await backupService.shareBackup();
+                try {
+                  await backupService.shareBackup();
+
+                  if (!context.mounted) return;
+                  AlertInfo.show(
+                    context: context,
+                    text: 'Backup pronto para compartilhar',
+                    typeInfo: TypeInfo.success,
+                  );
+                } catch (e) {
+                  if (!context.mounted) return;
+                  AlertInfo.show(
+                    context: context,
+                    text: 'Erro ao gerar backup',
+                    typeInfo: TypeInfo.error,
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showImportActions(
+    BuildContext context,
+    WidgetRef ref,
+    BackupService backupService,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(LucideIcons.folderOpen),
+              title: const Text('Usar backup do app'),
+              subtitle: const Text('Arquivo salvo localmente'),
+              onTap: () async {
+                Navigator.pop(context);
+
+                try {
+                  final works = await backupService.importFromAppFolder();
+                  if (works == null) {
+                    AlertInfo.show(
+                      context: context,
+                      text: 'Nenhum backup local encontrado',
+                      typeInfo: TypeInfo.warning,
+                    );
+                    return;
+                  }
+
+                  if (!context.mounted) return;
+                  final confirm = await _showConfirmImportDialog(context);
+                  if (confirm != true) return;
+
+                  ref.read(workListProvider.notifier).replaceAll(works);
+
+                  AlertInfo.show(
+                    context: context,
+                    text: 'Backup restaurado com sucesso!',
+                    typeInfo: TypeInfo.success,
+                  );
+                } catch (e) {
+                  AlertInfo.show(
+                    context: context,
+                    text: 'Erro ao importar backup',
+                    typeInfo: TypeInfo.error,
+                  );
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(LucideIcons.search),
+              title: const Text('Escolher arquivo'),
+              subtitle: const Text('Buscar em outra pasta'),
+              onTap: () async {
+                Navigator.pop(context);
+
+                try {
+                  final works = await backupService.importBackup();
+                  if (works == null) return;
+
+                  if (!context.mounted) return;
+                  final confirm = await _showConfirmImportDialog(context);
+                  if (confirm != true) return;
+
+                  ref.read(workListProvider.notifier).replaceAll(works);
+                  
+                  if (!context.mounted) return;
+                  AlertInfo.show(
+                    context: context,
+                    text: 'Backup importado com sucesso!',
+                    typeInfo: TypeInfo.success,
+                  );
+                } catch (e) {
+                  AlertInfo.show(
+                    context: context,
+                    text: 'Erro ao importar arquivo',
+                    typeInfo: TypeInfo.error,
+                  );
+                }
               },
             ),
           ],
@@ -129,6 +249,7 @@ class SettingsScreen extends ConsumerWidget {
                   },
                 ),
               ),*/
+              const SizedBox(height: 10.0),
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Theme.of(context).dividerColor),
@@ -157,9 +278,8 @@ class SettingsScreen extends ConsumerWidget {
                             leading: const Icon(LucideIcons.download),
                             title: const Text('Baixar backup'),
                             subtitle: const Text('Exportar seus dados'),
-                            onTap: () async =>
-                                await backupService.shareBackup(),
-                                
+                            onTap: () =>
+                                _showBackupActions(context, backupService),
                           ),
                           const Divider(),
                           ListTile(
@@ -167,26 +287,8 @@ class SettingsScreen extends ConsumerWidget {
                             leading: const Icon(LucideIcons.upload),
                             title: const Text('Carregar backup'),
                             subtitle: const Text('Substituir dados atuais'),
-                            onTap: () async {
-                              final works = await backupService.importBackup(
-                                ref,
-                              );
-                              if (works == null) return;
-
-                              if (!context.mounted) return;
-                              final confirm = await _showConfirmImportDialog(
-                                context,
-                              );
-
-                              if (confirm != true) return;
-                              final notifier = ref.read(
-                                workListProvider.notifier,
-                              );
-                              notifier.replaceAll(works);
-
-                              if (!context.mounted) return;
-                              Navigator.pop(context);
-                            },
+                            onTap: () =>
+                                _showImportActions(context, ref, backupService),
                           ),
                         ],
                       ),
