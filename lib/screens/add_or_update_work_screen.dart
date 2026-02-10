@@ -29,7 +29,7 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
 
     HapticFeedback.mediumImpact();
 
-    final notifier = ref.read(workListProvider.notifier);
+    final listNotifier = ref.read(workListProvider.notifier);
 
     final isEditing = widget.work != null;
 
@@ -54,8 +54,8 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
     );
 
     isEditing
-        ? notifier.updateWork(work.copyWith(id: widget.work!.id))
-        : notifier.addWork(work);
+        ? listNotifier.updateWork(work.copyWith(id: widget.work!.id))
+        : listNotifier.addWork(work);
 
     Navigator.pop(context);
   }

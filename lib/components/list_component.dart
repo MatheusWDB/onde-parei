@@ -6,6 +6,7 @@ import 'package:onde_parei/models/app_settings.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/providers/search_provider.dart';
 import 'package:onde_parei/providers/settings_provider.dart';
+import 'package:onde_parei/providers/work_list_provider.dart';
 
 class ListComponent extends ConsumerWidget {
   final HomeTabEnum homeTab;
@@ -29,8 +30,16 @@ class ListComponent extends ConsumerWidget {
       itemCount: condition ? worksBuilder.length + 1 : worksBuilder.length,
       separatorBuilder: (_, _) => const SizedBox(height: 6),
       itemBuilder: (context, index) => index == worksBuilder.length && condition
-            ? const SizedBox(height: 45.0)
-            : CardComponent(work: worksBuilder[index]),
+          ? const SizedBox(height: 45.0)
+          : CardComponent(
+              work: worksBuilder[index],
+              onDecreaseProgress: () => ref
+                  .read(workListProvider.notifier)
+                  .updateWork(worksBuilder[index].decrement()),
+              onIncreaseProgress: () => ref
+                  .read(workListProvider.notifier)
+                  .updateWork(worksBuilder[index].increment()),
+            ),
     );
   }
 }

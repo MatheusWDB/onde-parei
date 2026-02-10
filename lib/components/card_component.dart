@@ -11,16 +11,15 @@ import 'package:onde_parei/screens/add_or_update_work_screen.dart';
 
 class CardComponent extends ConsumerWidget {
   final Work work;
+  final VoidCallback onIncreaseProgress;
+  final VoidCallback onDecreaseProgress;
 
-  const CardComponent({required this.work, super.key});
-
-  void _increase(WidgetRef ref) {
-    ref.read(workListProvider.notifier).updateWork(work.increment());
-  }
-
-  void _decrement(WidgetRef ref) {
-    ref.read(workListProvider.notifier).updateWork(work.decrement());
-  }
+  const CardComponent({
+    required this.onDecreaseProgress,
+    required this.onIncreaseProgress,
+    required this.work,
+    super.key,
+  });
 
   Future<bool?> _showConfirmDelete(BuildContext context, AppLocalizations t) =>
       showDialog<bool>(
@@ -46,7 +45,7 @@ class CardComponent extends ConsumerWidget {
       context: context,
       backgroundColor: Theme.of(context).colorScheme.surface,
       builder: (_) {
-        final AppSettings settings = ref.watch(settingsProvider);
+        final AppSettings settings = ref.read(settingsProvider);
 
         return SafeArea(
           child: Column(
@@ -188,7 +187,7 @@ class CardComponent extends ConsumerWidget {
                             padding: EdgeInsets.zero,
                             onPressed: () {
                               HapticFeedback.selectionClick();
-                              return _decrement(ref);
+                              onDecreaseProgress();
                             },
                             icon: Icon(
                               LucideIcons.minus,
@@ -209,7 +208,7 @@ class CardComponent extends ConsumerWidget {
                             padding: EdgeInsets.zero,
                             onPressed: () {
                               HapticFeedback.selectionClick();
-                              return _increase(ref);
+                              onIncreaseProgress();
                             },
                             icon: Icon(LucideIcons.plus, color: colors.surface),
                             style: IconButton.styleFrom(

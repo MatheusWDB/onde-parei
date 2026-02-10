@@ -101,93 +101,102 @@ class SettingsScreen extends ConsumerWidget {
 
   void _showImportActions(
     BuildContext context,
-    WidgetRef ref,
+    WorkList listNotifier,
     BackupService backupService,
     AppLocalizations t,
   ) {
     showModalBottomSheet(
       context: context,
-      builder: (_) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(LucideIcons.folderOpen),
-              title: Text(t.appBackupUsage),
-              subtitle: Text(t.archiveSavedLocally),
-              onTap: () async {
-                Navigator.pop(context);
+      // ignore: prefer_expression_function_bodies
+      builder: (_) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(LucideIcons.folderOpen),
+                title: Text(t.appBackupUsage),
+                subtitle: Text(t.archiveSavedLocally),
+                onTap: () async {
+                  try {
+                    final works = await backupService.importFromAppFolder();
 
-                try {
-                  final works = await backupService.importFromAppFolder();
+                    if (!context.mounted) return;
 
-                  if (!context.mounted) return;
+                    if (works == null) {
+                      AlertInfo.show(
+                        context: context,
+                        text: t.backupLocalNotFound,
+                        typeInfo: TypeInfo.warning,
+                      );
+                      return;
+                    }
 
-                  if (works == null) {
+                    final confirm = await _showConfirmImportDialog(context, t);
+                    if (confirm != true) return;
+
+                    listNotifier.replaceAll(works);
+
+                    if (!context.mounted) return;
+
                     AlertInfo.show(
                       context: context,
-                      text: t.backupLocalNotFound,
-                      typeInfo: TypeInfo.warning,
+                      text: t.backupRestored,
+                      typeInfo: TypeInfo.success,
                     );
-                    return;
+
+                    Navigator.pop(context);
+                  } catch (e) {
+                    AlertInfo.show(
+                      context: context,
+                      text: t.backupImportError,
+                      typeInfo: TypeInfo.error,
+                    );
                   }
 
-                  final confirm = await _showConfirmImportDialog(context, t);
-                  if (confirm != true) return;
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(LucideIcons.search),
+                title: Text(t.chooseFile),
+                subtitle: Text(t.searchInAnotherFolder),
+                onTap: () async {
+                  try {
+                    final works = await backupService.importBackup();
+                    if (works == null) return;
 
-                  ref.read(workListProvider.notifier).replaceAll(works);
+                    if (!context.mounted) return;
 
-                  if (!context.mounted) return;
+                    final confirm = await _showConfirmImportDialog(context, t);
+                    if (confirm != true) return;
 
-                  AlertInfo.show(
-                    context: context,
-                    text: t.backupRestored,
-                    typeInfo: TypeInfo.success,
-                  );
-                } catch (e) {
-                  AlertInfo.show(
-                    context: context,
-                    text: t.backupImportError,
-                    typeInfo: TypeInfo.error,
-                  );
-                }
-              },
-            ),
-            ListTile(
-              leading: const Icon(LucideIcons.search),
-              title: Text(t.chooseFile),
-              subtitle: Text(t.searchInAnotherFolder),
-              onTap: () async {
-                Navigator.pop(context);
+                    listNotifier.replaceAll(works);
 
-                try {
-                  final works = await backupService.importBackup();
-                  if (works == null) return;
+                    if (!context.mounted) return;
 
-                  if (!context.mounted) return;
-                  final confirm = await _showConfirmImportDialog(context, t);
-                  if (confirm != true) return;
+                    AlertInfo.show(
+                      context: context,
+                      text: t.backupImported,
+                      typeInfo: TypeInfo.success,
+                    );
 
-                  ref.read(workListProvider.notifier).replaceAll(works);
+                    Navigator.pop(context);
+                  } catch (e) {
+                    AlertInfo.show(
+                      context: context,
+                      text: t.fileImportError,
+                      typeInfo: TypeInfo.error,
+                    );
+                  }
 
-                  if (!context.mounted) return;
-                  AlertInfo.show(
-                    context: context,
-                    text: t.backupImported,
-                    typeInfo: TypeInfo.success,
-                  );
-                } catch (e) {
-                  AlertInfo.show(
-                    context: context,
-                    text: t.fileImportError,
-                    typeInfo: TypeInfo.error,
-                  );
-                }
-              },
-            ),
-          ],
-        ),
-      ),
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -195,6 +204,8 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context)!;
     final BackupService backupService = BackupService();
+    final settingsNotifier = ref.read(settingsProvider.notifier);
+    final settings = ref.watch(settingsProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -212,10 +223,10 @@ class SettingsScreen extends ConsumerWidget {
                 dense: true,
                 title: Text(t.appTheme),
                 trailing: DropdownButton<AppThemeModeEnum>(
-                  value: ref.watch(settingsProvider).themeMode,
+                  value: settings.themeMode,
                   onChanged: (value) {
                     if (value != null) {
-                      ref.read(settingsProvider.notifier).setTheme(value);
+                      settingsNotifier.setTheme(value);
                     }
                   },
                   items: AppThemeModeEnum.values
@@ -232,9 +243,9 @@ class SettingsScreen extends ConsumerWidget {
                 dense: true,
                 title: Text(t.showCompletedOnHome),
                 trailing: Switch(
-                  value: ref.watch(settingsProvider).showCompletedOnDashboard,
+                  value: settings.showCompletedOnDashboard,
                   onChanged: (value) {
-                    ref.read(settingsProvider.notifier).setShowCompleted(value);
+                    settingsNotifier.setShowCompleted(value);
                   },
                 ),
               ),
@@ -242,9 +253,9 @@ class SettingsScreen extends ConsumerWidget {
                 dense: true,
                 title: Text(t.confirmDeletion),
                 trailing: Switch(
-                  value: ref.watch(settingsProvider).confirmBeforeDelete,
+                  value: settings.confirmBeforeDelete,
                   onChanged: (value) {
-                    ref.read(settingsProvider.notifier).setConfirmDelete(value);
+                    settingsNotifier.setConfirmDelete(value);
                   },
                 ),
               ),
@@ -253,7 +264,7 @@ class SettingsScreen extends ConsumerWidget {
                 dense: true,
                 title: Text(t.backupReminder),
                 trailing: Switch(
-                  value: ref.watch(settingsProvider).enableBackupReminder,
+                  value: settings.enableBackupReminder,
                   onChanged: (value) {
                     ref
                         .read(settingsProvider.notifier)
@@ -298,7 +309,7 @@ class SettingsScreen extends ConsumerWidget {
                             subtitle: Text(t.replaceCurrentData),
                             onTap: () => _showImportActions(
                               context,
-                              ref,
+                              ref.read(workListProvider.notifier),
                               backupService,
                               t,
                             ),
