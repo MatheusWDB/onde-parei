@@ -48,6 +48,7 @@ class SettingsScreen extends ConsumerWidget {
                   await backupService.saveBackupToAppFolder();
 
                   if (!context.mounted) return;
+                  
                   AlertInfo.show(
                     context: context,
                     text: 'Backup salvo com sucesso!',
@@ -74,7 +75,7 @@ class SettingsScreen extends ConsumerWidget {
                   if (!context.mounted) return;
                   AlertInfo.show(
                     context: context,
-                    text: 'Backup pronto para compartilhar',
+                    text: 'Backup compartilhado',
                     typeInfo: TypeInfo.success,
                   );
                 } catch (e) {
@@ -113,6 +114,9 @@ class SettingsScreen extends ConsumerWidget {
 
                 try {
                   final works = await backupService.importFromAppFolder();
+
+                  if (!context.mounted) return;
+
                   if (works == null) {
                     AlertInfo.show(
                       context: context,
@@ -122,11 +126,12 @@ class SettingsScreen extends ConsumerWidget {
                     return;
                   }
 
-                  if (!context.mounted) return;
                   final confirm = await _showConfirmImportDialog(context);
                   if (confirm != true) return;
 
                   ref.read(workListProvider.notifier).replaceAll(works);
+
+                  if (!context.mounted) return;
 
                   AlertInfo.show(
                     context: context,
@@ -158,7 +163,7 @@ class SettingsScreen extends ConsumerWidget {
                   if (confirm != true) return;
 
                   ref.read(workListProvider.notifier).replaceAll(works);
-                  
+
                   if (!context.mounted) return;
                   AlertInfo.show(
                     context: context,
