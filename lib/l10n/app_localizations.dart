@@ -518,7 +518,7 @@ abstract class AppLocalizations {
   ///
   /// In pt, this message translates to:
   /// **'Temp. {season} • Ep. {episode}'**
-  String progressWatching(Object episode, Object season);
+  String progressWatching(Object season, Object episode);
 }
 
 class _AppLocalizationsDelegate

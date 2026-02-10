@@ -223,7 +223,7 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String progressWatching(Object episode, Object season) {
+  String progressWatching(Object season, Object episode) {
     return 'Temp. $season • Ep. $episode';
   }
 }
