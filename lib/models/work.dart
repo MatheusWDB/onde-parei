@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:onde_parei/enums/type_enum.dart';
+import 'package:onde_parei/l10n/app_localizations.dart';
 
 class Work {
   final int? id;
@@ -61,15 +62,17 @@ class Work {
     return copyWith(episode: _clampInt(episode - 1), updatedAt: updatedAt);
   }
 
-  String get progressLabel {
+  String progressLabel(AppLocalizations t) {
     if (isReadingType) {
       final chapterLabel = type == TypeEnum.manhwa
           ? chapter.toStringAsFixed(1)
           : chapter.toStringAsFixed(0);
 
-      return "Cap. $chapterLabel${type == TypeEnum.book ? " • Pág. $page" : ""}";
+      return type == TypeEnum.book
+          ? t.progressReadingWithPage(chapterLabel, page)
+          : t.progressReadingSimple(chapterLabel);
     }
-    return 'Temp. $season • Ep. $episode';
+    return t.progressWatching(season, episode);
   }
 
   Map<String, dynamic> toMap() {

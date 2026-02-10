@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:onde_parei/l10n/app_localizations.dart';
 import 'package:onde_parei/models/app_settings.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/providers/settings_provider.dart';
@@ -21,27 +22,26 @@ class CardComponent extends ConsumerWidget {
     ref.read(workListProvider.notifier).updateWork(work.decrement());
   }
 
-  Future<bool?> _showConfirmDelete(BuildContext context) => showDialog<bool>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text('Confirmar Exclusão'),
-      content: const Text(
-        'Isso irá apagar permanentemente o item.\nDeseja continuar?',
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context, false),
-          child: const Text('Cancelar'),
+  Future<bool?> _showConfirmDelete(BuildContext context, AppLocalizations t) =>
+      showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(t.confirmDeletion),
+          content: Text(t.confirmDeletionMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(t.cancel),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(t.confirm),
+            ),
+          ],
         ),
-        ElevatedButton(
-          onPressed: () => Navigator.pop(context, true),
-          child: const Text('Confirmar'),
-        ),
-      ],
-    ),
-  );
+      );
 
-  void _showActions(BuildContext context, WidgetRef ref) {
+  void _showActions(BuildContext context, WidgetRef ref, AppLocalizations t) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -54,12 +54,12 @@ class CardComponent extends ConsumerWidget {
             children: [
               ListTile(
                 leading: Icon(
-                  work.isFinished ? LucideIcons.undo2 : LucideIcons.circleCheckBig,
+                  work.isFinished
+                      ? LucideIcons.undo2
+                      : LucideIcons.circleCheckBig,
                 ),
                 title: Text(
-                  work.isFinished
-                      ? 'Marcar como não concluído'
-                      : 'Marcar como concluído',
+                  work.isFinished ? t.markAsIncomplete : t.markAsCompleted,
                 ),
                 onTap: () {
                   ref
@@ -71,10 +71,10 @@ class CardComponent extends ConsumerWidget {
               ),
               ListTile(
                 leading: const Icon(LucideIcons.trash2),
-                title: const Text('Excluir'),
+                title: Text(t.delete),
                 onTap: () async {
                   if (settings.confirmBeforeDelete) {
-                    final bool? confirm = await _showConfirmDelete(context);
+                    final bool? confirm = await _showConfirmDelete(context, t);
                     if (confirm != true) return;
                   }
                   ref.read(workListProvider.notifier).removeWork(work.id!);
@@ -86,7 +86,7 @@ class CardComponent extends ConsumerWidget {
               ),
               ListTile(
                 leading: const Icon(LucideIcons.x),
-                title: const Text('Cancelar'),
+                title: Text(t.cancel),
                 onTap: () => Navigator.pop(context),
               ),
             ],
@@ -98,6 +98,8 @@ class CardComponent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = AppLocalizations.of(context)!;
+    final ColorScheme colors = Theme.of(context).colorScheme;
     final IconData icon = work.isReadingType
         ? LucideIcons.bookOpen
         : LucideIcons.tv;
@@ -112,7 +114,7 @@ class CardComponent extends ConsumerWidget {
       ),
       onLongPress: () {
         HapticFeedback.mediumImpact();
-        _showActions(context, ref);
+        _showActions(context, ref, t);
       },
       child: Card(
         elevation: 2.0,
@@ -127,12 +129,10 @@ class CardComponent extends ConsumerWidget {
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.primary.withValues(alpha: 0.1),
+                  color: colors.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: Theme.of(context).colorScheme.primary),
+                child: Icon(icon, color: colors.primary),
               ),
               Expanded(
                 child: Column(
@@ -148,7 +148,7 @@ class CardComponent extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      work.type.displayName,
+                      work.type.displayName(t),
                       style: TextStyle(
                         color: Theme.of(
                           context,
@@ -158,7 +158,7 @@ class CardComponent extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      work.progressLabel,
+                      work.progressLabel(t),
                       style: TextStyle(
                         color: Theme.of(
                           context,
@@ -171,11 +171,11 @@ class CardComponent extends ConsumerWidget {
                 ),
               ),
               work.isFinished
-                  ? const Row(
+                  ? Row(
                       spacing: 8,
                       children: [
-                        Text('Conclúido'),
-                        Icon(LucideIcons.circleCheck),
+                        Text(t.done),
+                        const Icon(LucideIcons.circleCheck),
                       ],
                     )
                   : Row(
@@ -192,7 +192,7 @@ class CardComponent extends ConsumerWidget {
                             },
                             icon: Icon(
                               LucideIcons.minus,
-                              color: Theme.of(context).colorScheme.surface,
+                              color: colors.surface,
                             ),
                             style: IconButton.styleFrom(
                               backgroundColor: Theme.of(
@@ -211,10 +211,7 @@ class CardComponent extends ConsumerWidget {
                               HapticFeedback.selectionClick();
                               return _increase(ref);
                             },
-                            icon: Icon(
-                              LucideIcons.plus,
-                              color: Theme.of(context).colorScheme.surface,
-                            ),
+                            icon: Icon(LucideIcons.plus, color: colors.surface),
                             style: IconButton.styleFrom(
                               backgroundColor: Theme.of(
                                 context,

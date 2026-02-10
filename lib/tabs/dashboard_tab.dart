@@ -4,6 +4,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:onde_parei/components/list_component.dart';
 import 'package:onde_parei/enums/home_tab_enum.dart';
 import 'package:onde_parei/enums/sort_enum.dart';
+import 'package:onde_parei/l10n/app_localizations.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/providers/search_provider.dart';
 import 'package:onde_parei/providers/settings_provider.dart';
@@ -14,6 +15,7 @@ class DashboardTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = AppLocalizations.of(context)!;
     final List<Work> works = ref.watch(sortedWorksProvider);
     final sort = ref.watch(sortConfigProvider);
 
@@ -49,9 +51,8 @@ class DashboardTab extends ConsumerWidget {
                     minWidth: 32,
                     minHeight: 32,
                   ),
-                  hintText: 'Pesquisar...',
+                  hintText: t.search,
                 ),
-                style: const TextStyle(),
                 onChanged: (value) {
                   searchNotifier.setQuery(value);
                 },
@@ -71,7 +72,7 @@ class DashboardTab extends ConsumerWidget {
                       .map(
                         (e) => DropdownMenuItem(
                           value: e,
-                          child: Text(e.displayName),
+                          child: Text(e.displayName(t)),
                         ),
                       )
                       .toList(),
@@ -107,9 +108,9 @@ class DashboardTab extends ConsumerWidget {
                         size: 45.0,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
-                      const Text(
-                        'Nenhum item salvo.',
-                        style: TextStyle(fontStyle: FontStyle.italic),
+                      Text(
+                        t.noItemsSaved,
+                        style: const TextStyle(fontStyle: FontStyle.italic),
                       ),
                     ],
                   ),

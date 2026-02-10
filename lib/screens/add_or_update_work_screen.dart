@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:onde_parei/enums/type_enum.dart';
+import 'package:onde_parei/l10n/app_localizations.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/providers/work_list_provider.dart';
 
@@ -25,7 +26,7 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
 
   void _save() {
     if (!_formKey.currentState!.validate()) return;
-    
+
     HapticFeedback.mediumImpact();
 
     final notifier = ref.read(workListProvider.notifier);
@@ -88,10 +89,13 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
+    return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.work == null ? 'Nova Obra' : 'Editar',
+          widget.work == null ? t.newWork : t.edit,
           style: const TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
@@ -111,18 +115,18 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Título da Obra'),
+                        Text(t.titleOfWork),
                         TextFormField(
                           controller: _titleController,
-                          decoration: const InputDecoration(
-                            hintText: 'Ex: Harry Potter',
+                          decoration: InputDecoration(
+                            hintText: t.exampleTitle,
                             errorMaxLines: 2,
-                            border: OutlineInputBorder(
+                            border: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(6),
                               ),
                             ),
-                            hintStyle: TextStyle(fontSize: 14.0),
+                            hintStyle: const TextStyle(fontSize: 14.0),
                           ),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
@@ -136,7 +140,7 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Categoria'),
+                        Text(t.category),
                         DropdownMenu<TypeEnum>(
                           initialSelection: _selectedType,
                           width: double.infinity,
@@ -149,7 +153,7 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
                               .map(
                                 (e) => DropdownMenuEntry(
                                   value: e,
-                                  label: e.displayName,
+                                  label: e.displayName(t),
                                 ),
                               )
                               .toList(),
@@ -165,14 +169,14 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
                             children: [
                               Text(
                                 _selectedType.isVideo
-                                    ? 'Temporada'
-                                    : 'Capítulo',
+                                    ? t.season
+                                    : t.chapter,
                               ),
                               TextFormField(
                                 controller: _seasonOrChapterController,
                                 decoration: InputDecoration(
                                   hintText: widget.work == null
-                                      ? '0'
+                                      ? t.zero
                                       : widget.work!.isReadingType
                                       ? widget.work!.chapter.toString()
                                       : widget.work!.season.toString(),
@@ -196,13 +200,13 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
                               if (!_selectedType.isReading ||
                                   _selectedType == TypeEnum.book) ...[
                                 Text(
-                                  _selectedType.isVideo ? 'Episódio' : 'Página',
+                                  _selectedType.isVideo ? t.episode : t.page,
                                 ),
                                 TextFormField(
                                   controller: _episodeOrPageController,
                                   decoration: InputDecoration(
                                     hintText: widget.work == null
-                                        ? '0'
+                                        ? t.zero
                                         : widget.work!.isReadingType
                                         ? widget.work!.page.toString()
                                         : widget.work!.episode.toString(),
@@ -227,9 +231,12 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
               ),
               ElevatedButton(
                 onPressed: _save,
-                child: const Row(
+                child:  Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Icon(LucideIcons.save), Text('Guardar Alterações')],
+                  children: [
+                    const Icon(LucideIcons.save),
+                    Text(t.saveChanges),
+                  ],
                 ),
               ),
             ],
@@ -237,4 +244,5 @@ class _AddOrUpdateWorkScreenState extends ConsumerState<AddOrUpdateWorkScreen> {
         ),
       ),
     );
+  }
 }

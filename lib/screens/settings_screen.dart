@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:onde_parei/enums/app_theme_mode_enum.dart';
+import 'package:onde_parei/l10n/app_localizations.dart';
 import 'package:onde_parei/providers/settings_provider.dart';
 import 'package:onde_parei/providers/work_list_provider.dart';
 import 'package:onde_parei/services/backup_service.dart';
@@ -12,27 +13,30 @@ class SettingsScreen extends ConsumerWidget {
 
   Future<bool?> _showConfirmImportDialog(
     BuildContext context,
+    AppLocalizations t,
   ) => showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Confirmar importação'),
-      content: const Text(
-        'Isso irá apagar todos os dados atuais e substituí-los pelo backup.\nDeseja continuar?',
-      ),
+      title: Text(t.confirmImport),
+      content: Text(t.confirmImportMessage),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child: const Text('Cancelar'),
+          child: Text(t.cancel),
         ),
         ElevatedButton(
           onPressed: () => Navigator.pop(context, true),
-          child: const Text('Confirmar'),
+          child: Text(t.confirm),
         ),
       ],
     ),
   );
 
-  void _showBackupActions(BuildContext context, BackupService backupService) {
+  void _showBackupActions(
+    BuildContext context,
+    BackupService backupService,
+    AppLocalizations t,
+  ) {
     showModalBottomSheet(
       context: context,
       builder: (_) => SafeArea(
@@ -41,24 +45,25 @@ class SettingsScreen extends ConsumerWidget {
           children: [
             ListTile(
               leading: const Icon(LucideIcons.folderDown),
-              title: const Text('Salvar em pasta'),
+              title: Text(t.saveToFolder),
               onTap: () async {
                 Navigator.pop(context);
                 try {
                   await backupService.saveBackupToAppFolder();
 
                   if (!context.mounted) return;
-                  
+
                   AlertInfo.show(
                     context: context,
-                    text: 'Backup salvo com sucesso!',
+                    text: t.backupDownloaded,
                     typeInfo: TypeInfo.success,
                   );
                 } catch (e) {
                   if (!context.mounted) return;
+
                   AlertInfo.show(
                     context: context,
-                    text: 'Erro ao salvar backup',
+                    text: t.backupDownloadError,
                     typeInfo: TypeInfo.error,
                   );
                 }
@@ -66,7 +71,7 @@ class SettingsScreen extends ConsumerWidget {
             ),
             ListTile(
               leading: const Icon(LucideIcons.share2),
-              title: const Text('Compartilhar'),
+              title: Text(t.share),
               onTap: () async {
                 Navigator.pop(context);
                 try {
@@ -75,14 +80,14 @@ class SettingsScreen extends ConsumerWidget {
                   if (!context.mounted) return;
                   AlertInfo.show(
                     context: context,
-                    text: 'Backup compartilhado',
+                    text: t.backupShared,
                     typeInfo: TypeInfo.success,
                   );
                 } catch (e) {
                   if (!context.mounted) return;
                   AlertInfo.show(
                     context: context,
-                    text: 'Erro ao gerar backup',
+                    text: t.backupShareError,
                     typeInfo: TypeInfo.error,
                   );
                 }
@@ -98,6 +103,7 @@ class SettingsScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     BackupService backupService,
+    AppLocalizations t,
   ) {
     showModalBottomSheet(
       context: context,
@@ -107,8 +113,8 @@ class SettingsScreen extends ConsumerWidget {
           children: [
             ListTile(
               leading: const Icon(LucideIcons.folderOpen),
-              title: const Text('Usar backup do app'),
-              subtitle: const Text('Arquivo salvo localmente'),
+              title: Text(t.appBackupUsage),
+              subtitle: Text(t.archiveSavedLocally),
               onTap: () async {
                 Navigator.pop(context);
 
@@ -120,13 +126,13 @@ class SettingsScreen extends ConsumerWidget {
                   if (works == null) {
                     AlertInfo.show(
                       context: context,
-                      text: 'Nenhum backup local encontrado',
+                      text: t.backupLocalNotFound,
                       typeInfo: TypeInfo.warning,
                     );
                     return;
                   }
 
-                  final confirm = await _showConfirmImportDialog(context);
+                  final confirm = await _showConfirmImportDialog(context, t);
                   if (confirm != true) return;
 
                   ref.read(workListProvider.notifier).replaceAll(works);
@@ -135,13 +141,13 @@ class SettingsScreen extends ConsumerWidget {
 
                   AlertInfo.show(
                     context: context,
-                    text: 'Backup restaurado com sucesso!',
+                    text: t.backupRestored,
                     typeInfo: TypeInfo.success,
                   );
                 } catch (e) {
                   AlertInfo.show(
                     context: context,
-                    text: 'Erro ao importar backup',
+                    text: t.backupImportError,
                     typeInfo: TypeInfo.error,
                   );
                 }
@@ -149,8 +155,8 @@ class SettingsScreen extends ConsumerWidget {
             ),
             ListTile(
               leading: const Icon(LucideIcons.search),
-              title: const Text('Escolher arquivo'),
-              subtitle: const Text('Buscar em outra pasta'),
+              title: Text(t.chooseFile),
+              subtitle: Text(t.searchInAnotherFolder),
               onTap: () async {
                 Navigator.pop(context);
 
@@ -159,7 +165,7 @@ class SettingsScreen extends ConsumerWidget {
                   if (works == null) return;
 
                   if (!context.mounted) return;
-                  final confirm = await _showConfirmImportDialog(context);
+                  final confirm = await _showConfirmImportDialog(context, t);
                   if (confirm != true) return;
 
                   ref.read(workListProvider.notifier).replaceAll(works);
@@ -167,13 +173,13 @@ class SettingsScreen extends ConsumerWidget {
                   if (!context.mounted) return;
                   AlertInfo.show(
                     context: context,
-                    text: 'Backup importado com sucesso!',
+                    text: t.backupImported,
                     typeInfo: TypeInfo.success,
                   );
                 } catch (e) {
                   AlertInfo.show(
                     context: context,
-                    text: 'Erro ao importar arquivo',
+                    text: t.fileImportError,
                     typeInfo: TypeInfo.error,
                   );
                 }
@@ -187,13 +193,14 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = AppLocalizations.of(context)!;
     final BackupService backupService = BackupService();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Configurações',
-          style: TextStyle(fontWeight: FontWeight.w700),
+        title: Text(
+          t.appSettings,
+          style: const TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
       body: SafeArea(
@@ -203,7 +210,7 @@ class SettingsScreen extends ConsumerWidget {
             children: [
               ListTile(
                 dense: true,
-                title: const Text('Tema'),
+                title: Text(t.appTheme),
                 trailing: DropdownButton<AppThemeModeEnum>(
                   value: ref.watch(settingsProvider).themeMode,
                   onChanged: (value) {
@@ -215,7 +222,7 @@ class SettingsScreen extends ConsumerWidget {
                       .map(
                         (e) => DropdownMenuItem(
                           value: e,
-                          child: Text(e.displayName),
+                          child: Text(e.displayName(t)),
                         ),
                       )
                       .toList(),
@@ -223,7 +230,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               ListTile(
                 dense: true,
-                title: const Text('Mostar Concluídos no Início'),
+                title: Text(t.showCompletedOnHome),
                 trailing: Switch(
                   value: ref.watch(settingsProvider).showCompletedOnDashboard,
                   onChanged: (value) {
@@ -233,7 +240,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               ListTile(
                 dense: true,
-                title: const Text('Confirmar Exclusão'),
+                title: Text(t.confirmDeletion),
                 trailing: Switch(
                   value: ref.watch(settingsProvider).confirmBeforeDelete,
                   onChanged: (value) {
@@ -244,7 +251,7 @@ class SettingsScreen extends ConsumerWidget {
               /** 
               ListTile(
                 dense: true,
-                title: Text('Lembrar de Fazer Backup'),
+                title: Text(t.backupReminder),
                 trailing: Switch(
                   value: ref.watch(settingsProvider).enableBackupReminder,
                   onChanged: (value) {
@@ -266,34 +273,35 @@ class SettingsScreen extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   spacing: 8.0,
                   children: [
-                    const Text(
-                      'Segurança dos Dados',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    Text(
+                      t.appBackupSecurity,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.start,
                     ),
-                    const Text(
-                      'O "Onde Parei?" guarda tudo localmente. Use as opções abaixo para não perder seus dados ao trocar ou formatar o dispositivo.',
-                      textAlign: TextAlign.start,
-                    ),
+                    Text(t.dataSecurityInfo, textAlign: TextAlign.start),
                     Card(
                       child: Column(
                         children: [
                           ListTile(
                             dense: true,
                             leading: const Icon(LucideIcons.download),
-                            title: const Text('Baixar backup'),
-                            subtitle: const Text('Exportar seus dados'),
+                            title: Text(t.downloadBackup),
+                            subtitle: Text(t.backupExport),
                             onTap: () =>
-                                _showBackupActions(context, backupService),
+                                _showBackupActions(context, backupService, t),
                           ),
                           const Divider(),
                           ListTile(
                             dense: true,
                             leading: const Icon(LucideIcons.upload),
-                            title: const Text('Carregar backup'),
-                            subtitle: const Text('Substituir dados atuais'),
-                            onTap: () =>
-                                _showImportActions(context, ref, backupService),
+                            title: Text(t.loadBackup),
+                            subtitle: Text(t.replaceCurrentData),
+                            onTap: () => _showImportActions(
+                              context,
+                              ref,
+                              backupService,
+                              t,
+                            ),
                           ),
                         ],
                       ),
