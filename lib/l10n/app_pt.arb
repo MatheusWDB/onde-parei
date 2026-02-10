@@ -68,6 +68,23 @@
   "sortUpdatedAt": "Atualização",
   "sortCreatedAt": "Criação",
   "progressReadingSimple": "Cap. {chapter}",
+  "@progressReadingSimple": {
+    "placeholders": {
+      "chapter": {}
+    }
+  },
   "progressReadingWithPage": "Cap. {chapter} • Pág. {page}",
-  "progressWatching": "Temp. {season} • Ep. {episode}"
+  "@progressReadingWithPage": {
+    "placeholders": {
+      "chapter": {},
+      "page": {}
+    }
+  },
+  "progressWatching": "Temp. {season} • Ep. {episode}",
+  "@progressWatching": {
+    "placeholders": {
+      "season": {},
+      "episode": {}
+    }
+  }
 }
