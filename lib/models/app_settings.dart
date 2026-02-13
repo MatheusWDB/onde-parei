@@ -5,6 +5,7 @@ class AppSettings {
   final AppThemeModeEnum themeMode;
   final SortField sortField;
   final SortDirection sortDirection;
+  final DateTime? lastBackupAt;
   final bool confirmBeforeDelete;
   final bool showCompletedOnDashboard;
   final bool enableBackupReminder;
@@ -16,6 +17,7 @@ class AppSettings {
     required this.confirmBeforeDelete,
     required this.showCompletedOnDashboard,
     required this.enableBackupReminder,
+    this.lastBackupAt,
   });
 
   factory AppSettings.initial() => const AppSettings(
@@ -24,13 +26,14 @@ class AppSettings {
     sortDirection: SortDirection.asc,
     confirmBeforeDelete: true,
     showCompletedOnDashboard: false,
-    enableBackupReminder: true,
+    enableBackupReminder: false,
   );
 
   AppSettings copyWith({
     AppThemeModeEnum? themeMode,
     SortField? sortField,
     SortDirection? sortDirection,
+    DateTime? lastBackupAt,
     bool? confirmBeforeDelete,
     bool? showCompletedOnDashboard,
     bool? enableBackupReminder,
@@ -38,6 +41,7 @@ class AppSettings {
     themeMode: themeMode ?? this.themeMode,
     sortField: sortField ?? this.sortField,
     sortDirection: sortDirection ?? this.sortDirection,
+    lastBackupAt: lastBackupAt ?? this.lastBackupAt,
     confirmBeforeDelete: confirmBeforeDelete ?? this.confirmBeforeDelete,
     showCompletedOnDashboard:
         showCompletedOnDashboard ?? this.showCompletedOnDashboard,
