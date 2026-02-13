@@ -69,5 +69,7 @@
   "sortCreatedAt": "Created",
   "progressReadingSimple": "Ch. {chapter}",
   "progressReadingWithPage": "Ch. {chapter} • Pg. {page}",
-  "progressWatching": "S. {season} • Ep. {episode}"
+  "progressWatching": "S. {season} • Ep. {episode}",
+  "neverDidBackup": "Never did a backup",
+  "lastBackup": "Last backup: {date}"
 }

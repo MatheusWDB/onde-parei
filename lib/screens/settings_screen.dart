@@ -1,6 +1,7 @@
 import 'package:alert_info/alert_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:onde_parei/enums/app_theme_mode_enum.dart';
 import 'package:onde_parei/l10n/app_localizations.dart';
@@ -36,6 +37,7 @@ class SettingsScreen extends ConsumerWidget {
     BuildContext context,
     BackupService backupService,
     AppLocalizations t,
+    Settings settingsNotifier,
   ) {
     showModalBottomSheet(
       context: context,
@@ -47,9 +49,10 @@ class SettingsScreen extends ConsumerWidget {
               leading: const Icon(LucideIcons.folderDown),
               title: Text(t.saveToFolder),
               onTap: () async {
-                Navigator.pop(context);
                 try {
                   await backupService.saveBackupToAppFolder();
+
+                  settingsNotifier.setLastBackup(DateTime.now());
 
                   if (!context.mounted) return;
 
@@ -67,17 +70,21 @@ class SettingsScreen extends ConsumerWidget {
                     typeInfo: TypeInfo.error,
                   );
                 }
+
+                Navigator.pop(context);
               },
             ),
             ListTile(
               leading: const Icon(LucideIcons.share2),
               title: Text(t.share),
               onTap: () async {
-                Navigator.pop(context);
                 try {
                   await backupService.shareBackup();
 
+                  settingsNotifier.setLastBackup(DateTime.now());
+
                   if (!context.mounted) return;
+
                   AlertInfo.show(
                     context: context,
                     text: t.backupShared,
@@ -91,6 +98,8 @@ class SettingsScreen extends ConsumerWidget {
                     typeInfo: TypeInfo.error,
                   );
                 }
+
+                Navigator.pop(context);
               },
             ),
           ],
@@ -207,6 +216,10 @@ class SettingsScreen extends ConsumerWidget {
     final settingsNotifier = ref.read(settingsProvider.notifier);
     final settings = ref.watch(settingsProvider);
 
+    final formattedDate = DateFormat.yMd(
+      Localizations.localeOf(context).languageCode,
+    ).add_Hm().format(settings.lastBackupAt!);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -259,19 +272,19 @@ class SettingsScreen extends ConsumerWidget {
                   },
                 ),
               ),
-              /** 
               ListTile(
                 dense: true,
                 title: Text(t.backupReminder),
+                subtitle: settings.lastBackupAt == null
+                    ? Text(t.neverDidBackup)
+                    : Text(t.lastBackup(formattedDate)),
                 trailing: Switch(
                   value: settings.enableBackupReminder,
                   onChanged: (value) {
-                    ref
-                        .read(settingsProvider.notifier)
-                        .setBackupReminder(value);
+                    settingsNotifier.setBackupReminder(value);
                   },
                 ),
-              ),*/
+              ),
               const SizedBox(height: 10.0),
               Container(
                 decoration: BoxDecoration(
@@ -298,8 +311,12 @@ class SettingsScreen extends ConsumerWidget {
                             leading: const Icon(LucideIcons.download),
                             title: Text(t.downloadBackup),
                             subtitle: Text(t.backupExport),
-                            onTap: () =>
-                                _showBackupActions(context, backupService, t),
+                            onTap: () => _showBackupActions(
+                              context,
+                              backupService,
+                              t,
+                              settingsNotifier,
+                            ),
                           ),
                           const Divider(),
                           ListTile(

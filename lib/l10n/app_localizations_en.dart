@@ -226,4 +226,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String progressWatching(Object season, Object episode) {
     return 'S. $season • Ep. $episode';
   }
+
+  @override
+  String get neverDidBackup => 'Never did a backup';
+
+  @override
+  String lastBackup(Object date) {
+    return 'Last backup: $date';
+  }
 }

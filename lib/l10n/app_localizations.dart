@@ -519,6 +519,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Temp. {season} • Ep. {episode}'**
   String progressWatching(Object season, Object episode);
+
+  /// No description provided for @neverDidBackup.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nunca fez backup'**
+  String get neverDidBackup;
+
+  /// No description provided for @lastBackup.
+  ///
+  /// In pt, this message translates to:
+  /// **'Último backup: {date}'**
+  String lastBackup(Object date);
 }
 
 class _AppLocalizationsDelegate

@@ -86,5 +86,12 @@
       "season": {},
       "episode": {}
     }
+  },
+  "neverDidBackup": "Nunca fez backup",
+  "lastBackup": "Último backup: {date}",
+  "@lastBackup": {
+    "placeholders": {
+      "date": {}
+    }
   }
 }
