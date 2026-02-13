@@ -59,7 +59,6 @@ class BackupReminderService {
       notificationDetails: details,
     );
 */
-    print('Notificação agendada para: $date');
   }
 
   Future<void> cancel() async {
