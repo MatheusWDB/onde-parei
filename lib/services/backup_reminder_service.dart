@@ -7,7 +7,7 @@ import 'package:timezone/timezone.dart' as tz;
 class BackupReminderService {
   static const int _notificationId = 1001;
   static const _backupInterval = Duration(days: 5);
-  static const _debugDelay = Duration(hours: 1);
+  static const _debugDelay = Duration(minutes: 30);
 
   Future<void> scheduleIfNeeded(AppSettings settings) async {
     final now = DateTime.now();
@@ -56,7 +56,8 @@ class BackupReminderService {
       body: 'Teste direto sem scheduler',
       notificationDetails: details,
     );
-*/
+
+    print('Notificação agendada para: $date');*/
   }
 
   Future<void> cancel() async {

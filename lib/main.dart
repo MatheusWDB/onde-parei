@@ -8,6 +8,7 @@ import 'package:onde_parei/providers/settings_provider.dart';
 import 'package:onde_parei/screens/home_screen.dart';
 import 'package:onde_parei/theme/app_themes.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 final FlutterLocalNotificationsPlugin notificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -15,10 +16,8 @@ final FlutterLocalNotificationsPlugin notificationsPlugin =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  
-
   tz.initializeTimeZones();
-  
+  tz.setLocalLocation(tz.getLocation('America/Sao_Paulo'));
 
   const android = AndroidInitializationSettings('ic_notification_2');
   const settings = InitializationSettings(android: android);
