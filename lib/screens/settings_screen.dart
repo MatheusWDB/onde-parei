@@ -216,9 +216,13 @@ class SettingsScreen extends ConsumerWidget {
     final settingsNotifier = ref.read(settingsProvider.notifier);
     final settings = ref.watch(settingsProvider);
 
-    final formattedDate = DateFormat.yMd(
-      Localizations.localeOf(context).languageCode,
-    ).add_Hm().format(settings.lastBackupAt!);
+    String? formattedDate;
+
+    if (settings.lastBackupAt != null) {
+      formattedDate = DateFormat.yMd(
+        Localizations.localeOf(context).languageCode,
+      ).add_Hm().format(settings.lastBackupAt!);
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -277,7 +281,7 @@ class SettingsScreen extends ConsumerWidget {
                 title: Text(t.backupReminder),
                 subtitle: settings.lastBackupAt == null
                     ? Text(t.neverDidBackup)
-                    : Text(t.lastBackup(formattedDate)),
+                    : Text(t.lastBackup(formattedDate!)),
                 trailing: Switch(
                   value: settings.enableBackupReminder,
                   onChanged: (value) {
