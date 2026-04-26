@@ -403,7 +403,7 @@ abstract class AppLocalizations {
   /// No description provided for @showCompletedOnHome.
   ///
   /// In pt, this message translates to:
-  /// **'Mostar Concluídos no Início'**
+  /// **'Mostrar Concluídos no Início'**
   String get showCompletedOnHome;
 
   /// No description provided for @titleOfWork.

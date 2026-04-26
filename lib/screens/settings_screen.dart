@@ -41,56 +41,55 @@ class SettingsScreen extends ConsumerWidget {
   ) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       builder: (_) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
               leading: const Icon(LucideIcons.folderDown),
-              title: Text(t.saveToFolder),
+              title: Text(t.downloadBackup),
               onTap: () async {
+                Navigator.pop(context);
                 try {
-                  await backupService.saveBackupToAppFolder();
-
+                  await backupService.saveBackup();
                   settingsNotifier.setLastBackup(DateTime.now());
 
                   if (!context.mounted) return;
-
                   AlertInfo.show(
                     context: context,
                     text: t.backupDownloaded,
                     typeInfo: TypeInfo.success,
                   );
                 } catch (e) {
+                  // Cancelamento pelo usuário — não exibe erro
+                  if (e.runtimeType.toString() == '_BackupCancelledException') return;
                   if (!context.mounted) return;
-
                   AlertInfo.show(
                     context: context,
                     text: t.backupDownloadError,
                     typeInfo: TypeInfo.error,
                   );
                 }
-
-                Navigator.pop(context);
               },
             ),
             ListTile(
               leading: const Icon(LucideIcons.share2),
               title: Text(t.share),
               onTap: () async {
+                Navigator.pop(context);
                 try {
                   await backupService.shareBackup();
-
                   settingsNotifier.setLastBackup(DateTime.now());
 
                   if (!context.mounted) return;
-
                   AlertInfo.show(
                     context: context,
                     text: t.backupShared,
                     typeInfo: TypeInfo.success,
                   );
                 } catch (e) {
+                  if (e.runtimeType.toString() == '_BackupCancelledException') return;
                   if (!context.mounted) return;
                   AlertInfo.show(
                     context: context,
@@ -98,8 +97,6 @@ class SettingsScreen extends ConsumerWidget {
                     typeInfo: TypeInfo.error,
                   );
                 }
-
-                Navigator.pop(context);
               },
             ),
           ],
@@ -116,96 +113,46 @@ class SettingsScreen extends ConsumerWidget {
   ) {
     showModalBottomSheet(
       context: context,
-      // ignore: prefer_expression_function_bodies
-      builder: (_) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(LucideIcons.folderOpen),
-                title: Text(t.appBackupUsage),
-                subtitle: Text(t.archiveSavedLocally),
-                onTap: () async {
-                  try {
-                    final works = await backupService.importFromAppFolder();
+      showDragHandle: true,
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(LucideIcons.search),
+              title: Text(t.chooseFile),
+              subtitle: Text(t.searchInAnotherFolder),
+              onTap: () async {
+                Navigator.pop(context);
+                try {
+                  final works = await backupService.importBackup();
+                  if (works == null) return;
 
-                    if (!context.mounted) return;
+                  if (!context.mounted) return;
+                  final confirm = await _showConfirmImportDialog(context, t);
+                  if (confirm != true) return;
 
-                    if (works == null) {
-                      AlertInfo.show(
-                        context: context,
-                        text: t.backupLocalNotFound,
-                        typeInfo: TypeInfo.warning,
-                      );
-                      return;
-                    }
+                  listNotifier.replaceAll(works);
 
-                    final confirm = await _showConfirmImportDialog(context, t);
-                    if (confirm != true) return;
-
-                    listNotifier.replaceAll(works);
-
-                    if (!context.mounted) return;
-
-                    AlertInfo.show(
-                      context: context,
-                      text: t.backupRestored,
-                      typeInfo: TypeInfo.success,
-                    );
-
-                    Navigator.pop(context);
-                  } catch (e) {
-                    AlertInfo.show(
-                      context: context,
-                      text: t.backupImportError,
-                      typeInfo: TypeInfo.error,
-                    );
-                  }
-
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: const Icon(LucideIcons.search),
-                title: Text(t.chooseFile),
-                subtitle: Text(t.searchInAnotherFolder),
-                onTap: () async {
-                  try {
-                    final works = await backupService.importBackup();
-                    if (works == null) return;
-
-                    if (!context.mounted) return;
-
-                    final confirm = await _showConfirmImportDialog(context, t);
-                    if (confirm != true) return;
-
-                    listNotifier.replaceAll(works);
-
-                    if (!context.mounted) return;
-
-                    AlertInfo.show(
-                      context: context,
-                      text: t.backupImported,
-                      typeInfo: TypeInfo.success,
-                    );
-
-                    Navigator.pop(context);
-                  } catch (e) {
-                    AlertInfo.show(
-                      context: context,
-                      text: t.fileImportError,
-                      typeInfo: TypeInfo.error,
-                    );
-                  }
-
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        );
-      },
+                  if (!context.mounted) return;
+                  AlertInfo.show(
+                    context: context,
+                    text: t.backupImported,
+                    typeInfo: TypeInfo.success,
+                  );
+                } catch (_) {
+                  if (!context.mounted) return;
+                  AlertInfo.show(
+                    context: context,
+                    text: t.backupImportError,
+                    typeInfo: TypeInfo.error,
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -217,7 +164,6 @@ class SettingsScreen extends ConsumerWidget {
     final settings = ref.watch(settingsProvider);
 
     String? formattedDate;
-
     if (settings.lastBackupAt != null) {
       formattedDate = DateFormat.yMd(
         Localizations.localeOf(context).languageCode,
@@ -242,9 +188,7 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: DropdownButton<AppThemeModeEnum>(
                   value: settings.themeMode,
                   onChanged: (value) {
-                    if (value != null) {
-                      settingsNotifier.setTheme(value);
-                    }
+                    if (value != null) settingsNotifier.setTheme(value);
                   },
                   items: AppThemeModeEnum.values
                       .map(
@@ -261,9 +205,7 @@ class SettingsScreen extends ConsumerWidget {
                 title: Text(t.showCompletedOnHome),
                 trailing: Switch(
                   value: settings.showCompletedOnDashboard,
-                  onChanged: (value) {
-                    settingsNotifier.setShowCompleted(value);
-                  },
+                  onChanged: settingsNotifier.setShowCompleted,
                 ),
               ),
               ListTile(
@@ -271,9 +213,7 @@ class SettingsScreen extends ConsumerWidget {
                 title: Text(t.confirmDeletion),
                 trailing: Switch(
                   value: settings.confirmBeforeDelete,
-                  onChanged: (value) {
-                    settingsNotifier.setConfirmDelete(value);
-                  },
+                  onChanged: settingsNotifier.setConfirmDelete,
                 ),
               ),
               ListTile(
@@ -284,9 +224,7 @@ class SettingsScreen extends ConsumerWidget {
                     : Text(t.lastBackup(formattedDate!)),
                 trailing: Switch(
                   value: settings.enableBackupReminder,
-                  onChanged: (value) {
-                    settingsNotifier.setBackupReminder(value);
-                  },
+                  onChanged: settingsNotifier.setBackupReminder,
                 ),
               ),
               const SizedBox(height: 10.0),
@@ -304,9 +242,8 @@ class SettingsScreen extends ConsumerWidget {
                     Text(
                       t.appBackupSecurity,
                       style: const TextStyle(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.start,
                     ),
-                    Text(t.dataSecurityInfo, textAlign: TextAlign.start),
+                    Text(t.dataSecurityInfo),
                     Card(
                       child: Column(
                         children: [

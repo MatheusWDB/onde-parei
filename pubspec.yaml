@@ -39,8 +39,8 @@ dependencies:
   flutter_launcher_icons: ^0.14.4
   sqflite: ^2.4.2
   path: ^1.9.1
-  flutter_riverpod: ^3.2.0
-  riverpod_annotation: ^4.0.1
+  flutter_riverpod: ^3.2.1
+  riverpod_annotation: ^4.0.2
   file_picker: ^10.3.10
   path_provider: ^2.1.5
   share_plus: ^12.0.1
@@ -51,6 +51,7 @@ dependencies:
   flutter_local_notifications: ^20.1.0
   timezone: ^0.10.1
   intl: ^0.20.2
+  file_saver: ^0.3.1
 
 dev_dependencies:
   flutter_test:
@@ -62,14 +63,11 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
-  build_runner:
-  riverpod_generator: ^4.0.2
+  build_runner: ^2.11.1
+  riverpod_generator: ^4.0.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
-dependency_overrides:
-  test_api: ^0.7.9
 
 # The following section is specific to Flutter packages.
 flutter:

@@ -162,7 +162,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get share => 'Compartilhar';
 
   @override
-  String get showCompletedOnHome => 'Mostar Concluídos no Início';
+  String get showCompletedOnHome => 'Mostrar Concluídos no Início';
 
   @override
   String get titleOfWork => 'Título da Obra';
