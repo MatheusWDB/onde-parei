@@ -1,24 +1,20 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/repositories/work_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'work_list_provider.g.dart';
 
-final workRepositoryProvider = Provider((ref) => WorkRepository());
+@Riverpod(keepAlive: true)
+WorkRepository workRepository(Ref _) => WorkRepository();
 
-@riverpod
+@Riverpod(keepAlive: true)
 class WorkList extends _$WorkList {
   late final WorkRepository _repository;
 
   @override
   Future<List<Work>> build() async {
-    try {
-      _repository = ref.read(workRepositoryProvider);
-      return _repository.findAll();
-    } catch (e, st) {
-      throw AsyncError(e, st);
-    }
+    _repository = ref.read(workRepositoryProvider);
+    return _repository.findAll();
   }
 
   Future<void> addWork(Work work) async {
@@ -37,6 +33,10 @@ class WorkList extends _$WorkList {
     });
   }
 
+  Future<void> updateWorkSilently(Work work) async {
+    await _repository.update(work);
+  }
+
   Future<void> removeWork(int id) async {
     final current = state.value ?? [];
     state = await AsyncValue.guard(() async {
@@ -47,14 +47,19 @@ class WorkList extends _$WorkList {
 
   Future<void> replaceAll(List<Work> works) async {
     state = await AsyncValue.guard(() async {
-      final db = _repository;
-      await db.deleteAll();
+      final repository = _repository;
+      await repository.deleteAll();
 
       final List<Work> insertedWorks = await Future.wait(
-        works.map((work) => db.insert(work)).toList(),
+        works.map((work) => repository.insert(work)).toList(),
       );
 
       return insertedWorks;
     });
+  }
+
+  Future<void> refresh() async {
+    final works = await _repository.findAll();
+    state = AsyncData(works);
   }
 }

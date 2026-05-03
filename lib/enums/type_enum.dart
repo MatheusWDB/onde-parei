@@ -32,6 +32,7 @@ enum TypeEnum {
 
   const TypeEnum(this.code);
 
+  // novel aqui representa novela televisiva (soap opera), não light novel
   bool get isVideo =>
       this == TypeEnum.anime ||
       this == TypeEnum.series ||

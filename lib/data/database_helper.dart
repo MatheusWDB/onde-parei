@@ -1,9 +1,9 @@
-import 'package:onde_parei/models/work.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
   static const String tableWorks = 'works';
+  
   static const String columnId = 'id';
   static const String columnTitle = 'title';
   static const String columnType = 'type';
@@ -20,11 +20,7 @@ class DatabaseHelper {
 
   DatabaseHelper._();
 
-  Future<Database> get database async {
-    if (_database != null) return _database!;
-
-    return await _initDatabase();
-  }
+  Future<Database> get database async => _database ??= await _initDatabase();
 
   Future<Database> _initDatabase() async {
     final String path = join(await getDatabasesPath(), 'works.database');
@@ -51,74 +47,4 @@ class DatabaseHelper {
             $columnUpdatedAt TEXT
           );
       ''';
-
-  Future<Work> insertWork(Work work) async {
-    final Database dbWorks = await database;
-    return work.copyWith(id: await dbWorks.insert(tableWorks, work.toMap()));
-  }
-
-  Future<Work?> fetchWorkById(int id) async {
-    final Database dbWorks = await database;
-    final List<Map<String, dynamic>> maps = await dbWorks.query(
-      tableWorks,
-      columns: [
-        columnId,
-        columnTitle,
-        columnType,
-        columnSeason,
-        columnEpisode,
-        columnChapter,
-        columnPage,
-        columnIsFinished,
-        columnCreatedAt,
-        columnUpdatedAt,
-      ],
-      where: '$columnId = ?',
-      whereArgs: [id],
-    );
-
-    if (maps.isEmpty) return null;
-
-    return Work.fromMap(maps.first);
-  }
-
-  Future<int> deleteWork(int id) async {
-    final Database dbWorks = await database;
-    return await dbWorks.delete(
-      tableWorks,
-      where: '$columnId = ?',
-      whereArgs: [id],
-    );
-  }
-
-  Future<int> updateWork(Work work) async {
-    final Database dbWorks = await database;
-    return await dbWorks.update(
-      tableWorks,
-      work.toMap(),
-      where: '$columnId = ?',
-      whereArgs: [work.id],
-    );
-  }
-
-  Future<List<Work>> fetchAllWorks() async {
-    final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      tableWorks,
-      orderBy: 'updatedAt DESC',
-    );
-    return maps.map((e) => Work.fromMap(e)).toList();
-  }
-
-  Future<int?> count() async {
-    final Database dbWorks = await database;
-    return Sqflite.firstIntValue(
-      await dbWorks.rawQuery('SELECT COUNT(*) FROM $tableWorks'),
-    );
-  }
-
-  Future<void> close() async {
-    final Database dbWorks = await database;
-    await dbWorks.close();
-  }
 }

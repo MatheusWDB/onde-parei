@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:onde_parei/components/list_component.dart';
+import 'package:onde_parei/components/empty_state.dart';
+import 'package:onde_parei/components/work_list_view.dart';
 import 'package:onde_parei/enums/home_tab_enum.dart';
 import 'package:onde_parei/enums/sort_enum.dart';
 import 'package:onde_parei/l10n/app_localizations.dart';
@@ -19,7 +20,6 @@ class DashboardTab extends ConsumerWidget {
     final List<Work> works = ref.watch(sortedWorksProvider);
     final sort = ref.watch(sortConfigProvider);
 
-    final sortNotifier = ref.read(sortConfigProvider.notifier);
     final settingsNotifier = ref.read(settingsProvider.notifier);
     final searchNotifier = ref.read(searchQueryProvider.notifier);
 
@@ -65,8 +65,7 @@ class DashboardTab extends ConsumerWidget {
                   value: sort.field,
                   iconSize: 0.0,
                   onChanged: (value) {
-                    sortNotifier.changeField(value!);
-                    settingsNotifier.setSortField(value);
+                    settingsNotifier.setSortField(value!);
                   },
                   items: SortField.values
                       .map(
@@ -84,7 +83,6 @@ class DashboardTab extends ConsumerWidget {
                         ? SortDirection.desc
                         : SortDirection.asc;
 
-                    sortNotifier.toggleDirection();
                     settingsNotifier.setSortDirection(newDirection);
                   },
                   icon: Icon(
@@ -99,23 +97,8 @@ class DashboardTab extends ConsumerWidget {
         ),
         Expanded(
           child: activeWorks.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        LucideIcons.bookOpenText,
-                        size: 45.0,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                      Text(
-                        t.noItemsSaved,
-                        style: const TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ],
-                  ),
-                )
-              : const ListComponent(homeTab: HomeTabEnum.dashboard),
+              ? EmptyState(message: t.noItemsSaved)
+              : const WorkListView(homeTab: HomeTabEnum.dashboard),
         ),
       ],
     );

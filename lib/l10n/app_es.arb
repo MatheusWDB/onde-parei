@@ -71,5 +71,13 @@
   "progressReadingWithPage": "Cap. {chapter} • Pág. {page}",
   "progressWatching": "T. {season} • Ep. {episode}",
   "neverDidBackup": "Nunca hizo una copia de seguridad",
-  "lastBackup": "Último respaldo: {date}"
+  "lastBackup": "Último respaldo: {date}",
+  "titleRequired": "Introduce un título",
+  "@titleRequired": {},
+  "backupReminderTitle": "Es hora de hacer una copia de seguridad",
+  "@backupReminderTitle": {},
+  "backupReminderBody": "No olvides guardar tus datos",
+  "@backupReminderBody": {},
+  "invalidNumber": "Número inválido",
+  "@invalidNumber": {}
 }

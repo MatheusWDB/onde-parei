@@ -6,7 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class SearchQuery extends _$SearchQuery {
   @override
   String build() => '';
@@ -20,9 +20,8 @@ class SearchQuery extends _$SearchQuery {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 List<Work> filteredWorks(Ref ref) {
-  ref.keepAlive();
   final worksAsync = ref.watch(workListProvider);
   final query = ref.watch(searchQueryProvider).toLowerCase();
 
@@ -36,9 +35,8 @@ List<Work> filteredWorks(Ref ref) {
   );
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 List<Work> sortedWorks(Ref ref) {
-  ref.keepAlive();
   final works = ref.watch(filteredWorksProvider);
   final sort = ref.watch(sortConfigProvider);
 

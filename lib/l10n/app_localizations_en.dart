@@ -234,4 +234,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String lastBackup(Object date) {
     return 'Last backup: $date';
   }
+
+  @override
+  String get titleRequired => 'Enter a title';
+
+  @override
+  String get backupReminderTitle => 'Time to backup';
+
+  @override
+  String get backupReminderBody => 'Don\'t forget to save your data';
+
+  @override
+  String get invalidNumber => 'Invalid number';
 }

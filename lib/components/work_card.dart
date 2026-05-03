@@ -7,99 +7,108 @@ import 'package:onde_parei/models/app_settings.dart';
 import 'package:onde_parei/models/work.dart';
 import 'package:onde_parei/providers/settings_provider.dart';
 import 'package:onde_parei/providers/work_list_provider.dart';
-import 'package:onde_parei/screens/add_or_update_work_screen.dart';
+import 'package:onde_parei/screens/work_form_screen.dart';
+import 'package:onde_parei/utils/dialogs.dart';
 
-class CardComponent extends ConsumerWidget {
+class WorkCard extends ConsumerStatefulWidget {
   final Work work;
-  final VoidCallback onIncreaseProgress;
-  final VoidCallback onDecreaseProgress;
+  const WorkCard({required this.work, super.key});
 
-  const CardComponent({
-    required this.onDecreaseProgress,
-    required this.onIncreaseProgress,
-    required this.work,
-    super.key,
-  });
+  @override
+  ConsumerState<WorkCard> createState() => _WorkCardState();
+}
+
+class _WorkCardState extends ConsumerState<WorkCard> {
+  late Work work;
 
   Future<bool?> _showConfirmDelete(BuildContext context, AppLocalizations t) =>
-      showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(t.confirmDeletion),
-          content: Text(t.confirmDeletionMessage),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(t.cancel),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(t.confirm),
-            ),
-          ],
-        ),
+      showConfirmDialog(
+        context,
+        title: t.confirmDeletion,
+        content: t.confirmDeletionMessage,
+        cancelLabel: t.cancel,
+        confirmLabel: t.confirm,
       );
 
   void _showActions(BuildContext context, WidgetRef ref, AppLocalizations t) {
+    final AppSettings settings = ref.read(settingsProvider).requireValue;
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Theme.of(context).colorScheme.surface,
-      builder: (_) {
-        final AppSettings settings = ref.read(settingsProvider);
-
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: Icon(
-                  work.isFinished
-                      ? LucideIcons.undo2
-                      : LucideIcons.circleCheckBig,
-                ),
-                title: Text(
-                  work.isFinished ? t.markAsIncomplete : t.markAsCompleted,
-                ),
-                onTap: () {
-                  ref
-                      .read(workListProvider.notifier)
-                      .updateWork(work.copyWith(isFinished: !work.isFinished));
-
-                  Navigator.pop(context);
-                },
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(
+                work.isFinished
+                    ? LucideIcons.undo2
+                    : LucideIcons.circleCheckBig,
               ),
-              ListTile(
-                leading: const Icon(LucideIcons.trash2),
-                title: Text(t.delete),
-                onTap: () async {
-                  if (settings.confirmBeforeDelete) {
-                    final bool? confirm = await _showConfirmDelete(context, t);
-                    if (confirm != true) return;
-                  }
-                  ref.read(workListProvider.notifier).removeWork(work.id!);
-
-                  if (!context.mounted) return;
-
-                  Navigator.pop(context);
-                },
+              title: Text(
+                work.isFinished ? t.markAsIncomplete : t.markAsCompleted,
               ),
-              ListTile(
-                leading: const Icon(LucideIcons.x),
-                title: Text(t.cancel),
-                onTap: () => Navigator.pop(context),
-              ),
-            ],
-          ),
-        );
-      },
+              onTap: () {
+                ref
+                    .read(workListProvider.notifier)
+                    .updateWork(work.copyWith(isFinished: !work.isFinished));
+
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(LucideIcons.trash2),
+              title: Text(t.delete),
+              onTap: () async {
+                if (settings.confirmBeforeDelete) {
+                  final bool? confirm = await _showConfirmDelete(context, t);
+                  if (confirm != true) return;
+                }
+                ref.read(workListProvider.notifier).removeWork(work.id!);
+
+                if (!context.mounted) return;
+
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(LucideIcons.x),
+              title: Text(t.cancel),
+              onTap: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
+  void _onIncreaseOrDecreaseProgress(WidgetRef ref, Work work) {
+    HapticFeedback.selectionClick();
+    ref.read(workListProvider.notifier).updateWorkSilently(work);
+
+    setState(() => this.work = work);
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    work = widget.work;
+  }
+
+  @override
+  void didUpdateWidget(WorkCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.work != widget.work) {
+      work = widget.work;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final IconData icon = work.isReadingType
+    final IconData icon = work.isReading
         ? LucideIcons.bookOpen
         : LucideIcons.tv;
 
@@ -107,9 +116,7 @@ class CardComponent extends ConsumerWidget {
       borderRadius: BorderRadius.circular(16),
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => AddOrUpdateWorkScreen(work: work),
-        ),
+        MaterialPageRoute(builder: (context) => WorkFormScreen(work: work)),
       ),
       onLongPress: () {
         HapticFeedback.mediumImpact();
@@ -185,10 +192,12 @@ class CardComponent extends ConsumerWidget {
                           height: 35.0,
                           child: IconButton(
                             padding: EdgeInsets.zero,
-                            onPressed: () {
-                              HapticFeedback.selectionClick();
-                              onDecreaseProgress();
-                            },
+                            onPressed: work.episode > 0 || work.chapter > 0
+                                ? () => _onIncreaseOrDecreaseProgress(
+                                    ref,
+                                    work.decrement(),
+                                  )
+                                : null,
                             icon: Icon(
                               LucideIcons.minus,
                               color: colors.surface,
@@ -206,10 +215,10 @@ class CardComponent extends ConsumerWidget {
                           height: 35.0,
                           child: IconButton(
                             padding: EdgeInsets.zero,
-                            onPressed: () {
-                              HapticFeedback.selectionClick();
-                              onIncreaseProgress();
-                            },
+                            onPressed: () => _onIncreaseOrDecreaseProgress(
+                              ref,
+                              work.increment(),
+                            ),
                             icon: Icon(LucideIcons.plus, color: colors.surface),
                             style: IconButton.styleFrom(
                               backgroundColor: Theme.of(

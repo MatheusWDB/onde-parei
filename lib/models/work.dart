@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:onde_parei/enums/type_enum.dart';
@@ -28,42 +29,36 @@ class Work {
     this.updatedAt,
   });
 
-  bool get isReadingType => type.isReading;
+  bool get isReading => type.isReading;
 
   Work increment() {
-    if (isReadingType) {
+    if (isReading) {
       if (type == TypeEnum.manhwa) {
-        return copyWith(chapter: chapter + 0.5, updatedAt: updatedAt);
+        return copyWith(chapter: chapter + 0.5);
       }
       if (type == TypeEnum.manga || type == TypeEnum.hq) {
-        return copyWith(chapter: chapter + 1.0, updatedAt: updatedAt);
+        return copyWith(chapter: chapter + 1.0);
       }
-      return copyWith(page: page + 1, updatedAt: updatedAt);
+      return copyWith(page: page + 1);
     }
-    return copyWith(episode: episode + 1, updatedAt: updatedAt);
+    return copyWith(episode: episode + 1);
   }
 
   Work decrement() {
-    if (isReadingType) {
+    if (isReading) {
       if (type == TypeEnum.manhwa) {
-        return copyWith(
-          chapter: _clampDouble(chapter - 0.5),
-          updatedAt: updatedAt,
-        );
+        return copyWith(chapter: (chapter - 0.5).clamp(0.0, double.maxFinite));
       }
       if (type == TypeEnum.manga || type == TypeEnum.hq) {
-        return copyWith(
-          chapter: _clampDouble(chapter - 1.0),
-          updatedAt: updatedAt,
-        );
+        return copyWith(chapter: (chapter - 1.0).clamp(0.0, double.maxFinite));
       }
-      return copyWith(page: _clampInt(page - 1), updatedAt: updatedAt);
+      return copyWith(page: (page - 1).clamp(0, 999999));
     }
-    return copyWith(episode: _clampInt(episode - 1), updatedAt: updatedAt);
+    return copyWith(episode: (episode - 1).clamp(0, 999999));
   }
 
   String progressLabel(AppLocalizations t) {
-    if (isReadingType) {
+    if (isReading) {
       final chapterLabel = type == TypeEnum.manhwa
           ? chapter.toStringAsFixed(1)
           : chapter.toStringAsFixed(0);
@@ -98,7 +93,7 @@ class Work {
 
   factory Work.fromMap(Map<String, dynamic> map) => Work(
     id: map['id'] as int?,
-    title: map['title'] as String? ?? 'Sem título',
+    title: map['title'] as String? ?? '',
     type: map['type'] is int?
         ? TypeEnum.fromCode(map['type'])
         : TypeEnum.fromName(map['type'].toString()),
@@ -121,7 +116,8 @@ class Work {
     return json.encode(map);
   }
 
-  factory Work.fromJson(String source) => Work.fromMap(json.decode(source));
+  factory Work.fromJson(String source) =>
+      Work.fromMap(json.decode(source) as Map<String, dynamic>);
 
   Work copyWith({
     int? id,
@@ -147,10 +143,36 @@ class Work {
     updatedAt: updatedAt ?? DateTime.now(),
   );
 
-  int _clampInt(int value) => value < 0 ? 0 : value;
-  double _clampDouble(double value) => value < 0 ? 0 : value;
-
   @override
   String toString() =>
-      'Work(id: $id, title: $title, type: ${type.displayName}, season: $season, episode: $episode, chapter: $chapter, page: $page, isFinished: $isFinished, createdAt: $createdAt, updatedAt: $updatedAt)';
+      'Work(id: $id, title: $title, type: ${type.name}, season: $season, episode: $episode, chapter: $chapter, page: $page, isFinished: $isFinished, createdAt: $createdAt, updatedAt: $updatedAt)';
+
+  @override
+  bool operator ==(covariant Work other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id &&
+        other.title == title &&
+        other.type == type &&
+        other.season == season &&
+        other.episode == episode &&
+        other.chapter == chapter &&
+        other.page == page &&
+        other.isFinished == isFinished &&
+        other.createdAt == createdAt &&
+        other.updatedAt == updatedAt;
+  }
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      title.hashCode ^
+      type.hashCode ^
+      season.hashCode ^
+      episode.hashCode ^
+      chapter.hashCode ^
+      page.hashCode ^
+      isFinished.hashCode ^
+      createdAt.hashCode ^
+      updatedAt.hashCode;
 }

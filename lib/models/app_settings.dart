@@ -7,7 +7,6 @@ class AppSettings {
   final SortDirection sortDirection;
   final DateTime? lastBackupAt;
   final bool confirmBeforeDelete;
-  final bool showCompletedOnDashboard;
   final bool enableBackupReminder;
 
   const AppSettings({
@@ -15,7 +14,6 @@ class AppSettings {
     required this.sortField,
     required this.themeMode,
     required this.confirmBeforeDelete,
-    required this.showCompletedOnDashboard,
     required this.enableBackupReminder,
     this.lastBackupAt,
   });
@@ -25,7 +23,6 @@ class AppSettings {
     sortField: SortField.title,
     sortDirection: SortDirection.asc,
     confirmBeforeDelete: true,
-    showCompletedOnDashboard: false,
     enableBackupReminder: false,
   );
 
@@ -35,7 +32,6 @@ class AppSettings {
     SortDirection? sortDirection,
     DateTime? lastBackupAt,
     bool? confirmBeforeDelete,
-    bool? showCompletedOnDashboard,
     bool? enableBackupReminder,
   }) => AppSettings(
     themeMode: themeMode ?? this.themeMode,
@@ -43,8 +39,6 @@ class AppSettings {
     sortDirection: sortDirection ?? this.sortDirection,
     lastBackupAt: lastBackupAt ?? this.lastBackupAt,
     confirmBeforeDelete: confirmBeforeDelete ?? this.confirmBeforeDelete,
-    showCompletedOnDashboard:
-        showCompletedOnDashboard ?? this.showCompletedOnDashboard,
     enableBackupReminder: enableBackupReminder ?? this.enableBackupReminder,
   );
 }

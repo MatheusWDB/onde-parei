@@ -12,14 +12,15 @@ part of 'settings_provider.dart';
 @ProviderFor(Settings)
 final settingsProvider = SettingsProvider._();
 
-final class SettingsProvider extends $NotifierProvider<Settings, AppSettings> {
+final class SettingsProvider
+    extends $AsyncNotifierProvider<Settings, AppSettings> {
   SettingsProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'settingsProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -30,29 +31,21 @@ final class SettingsProvider extends $NotifierProvider<Settings, AppSettings> {
   @$internal
   @override
   Settings create() => Settings();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AppSettings value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<AppSettings>(value),
-    );
-  }
 }
 
-String _$settingsHash() => r'621750b743d78cb64c5b81969460e6ac05d0f53b';
+String _$settingsHash() => r'cc7972523d06e14b1726fe4ba91ac5c448adaa8a';
 
-abstract class _$Settings extends $Notifier<AppSettings> {
-  AppSettings build();
+abstract class _$Settings extends $AsyncNotifier<AppSettings> {
+  FutureOr<AppSettings> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<AppSettings, AppSettings>;
+    final ref = this.ref as $Ref<AsyncValue<AppSettings>, AppSettings>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AppSettings, AppSettings>,
-              AppSettings,
+              AnyNotifier<AsyncValue<AppSettings>, AppSettings>,
+              AsyncValue<AppSettings>,
               Object?,
               Object?
             >;

@@ -1,125 +1,118 @@
 import 'package:onde_parei/enums/app_theme_mode_enum.dart';
 import 'package:onde_parei/enums/sort_enum.dart';
 import 'package:onde_parei/models/app_settings.dart';
+import 'package:onde_parei/providers/backup_service_provider.dart';
 import 'package:onde_parei/services/backup_reminder_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'settings_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Settings extends _$Settings {
-  Future<SharedPreferences> get _prefs async =>
-      await SharedPreferences.getInstance();
+  late final SharedPreferences _prefs;
 
   static const _themeKey = 'theme_mode';
   static const _sortFieldKey = 'sort_field';
   static const _sortDirectionKey = 'sort_direction';
   static const _lastBackupKey = 'last_backup_at';
-  static const _confirmKey = 'confirm_delete';
-  static const _showCompletedKey = 'show_completed';
+  static const _confirmKey = 'confirm_before_delete';
   static const _reminderKey = 'reminder_backup';
 
-  final _reminderService = BackupReminderService();
+  late final BackupReminderService _reminderService;
 
   @override
-  AppSettings build() {
-    ref.keepAlive();
+  Future<AppSettings> build() async {
+    _prefs = await SharedPreferences.getInstance();
+    _reminderService = ref.read(backupReminderServiceProvider);
 
-    _loadFromStorage();
+    final themeIndex = _prefs.getInt(_themeKey);
+    final sortFieldIndex = _prefs.getInt(_sortFieldKey);
+    final sortDirectionIndex = _prefs.getInt(_sortDirectionKey);
+    final lastBackupMillis = _prefs.getInt(_lastBackupKey);
+    final confirm = _prefs.getBool(_confirmKey);
+    final reminder = _prefs.getBool(_reminderKey);
 
-    return const AppSettings(
-      themeMode: AppThemeModeEnum.system,
-      confirmBeforeDelete: true,
-      showCompletedOnDashboard: false,
-      enableBackupReminder: false,
-      sortDirection: SortDirection.asc,
-      sortField: SortField.title,
-    );
-  }
-
-  Future<void> _loadFromStorage() async {
-    final prefs = await _prefs;
-
-    final themeIndex = prefs.getInt(_themeKey);
-    final sortFieldIndex = prefs.getInt(_sortFieldKey);
-    final sortDirectionIndex = prefs.getInt(_sortDirectionKey);
-    final lastBackupMillis = prefs.getInt(_lastBackupKey);
-    final confirm = prefs.getBool(_confirmKey);
-    final showCompleted = prefs.getBool(_showCompletedKey);
-    final reminder = prefs.getBool(_reminderKey);
-
-    state = state.copyWith(
+    return AppSettings(
       themeMode: themeIndex != null
           ? AppThemeModeEnum.values[themeIndex]
-          : state.themeMode,
+          : AppThemeModeEnum.system,
       sortField: sortFieldIndex != null
           ? SortField.values[sortFieldIndex]
-          : state.sortField,
+          : SortField.title,
       sortDirection: sortDirectionIndex != null
           ? SortDirection.values[sortDirectionIndex]
-          : state.sortDirection,
+          : SortDirection.asc,
       lastBackupAt: lastBackupMillis != null
           ? DateTime.fromMillisecondsSinceEpoch(lastBackupMillis)
           : null,
-      confirmBeforeDelete: confirm ?? state.confirmBeforeDelete,
-      showCompletedOnDashboard: showCompleted ?? state.showCompletedOnDashboard,
-      enableBackupReminder: reminder ?? state.enableBackupReminder,
+      confirmBeforeDelete: confirm ?? true,
+      enableBackupReminder: reminder ?? false,
     );
   }
 
-  Future<void> setTheme(AppThemeModeEnum mode) async {
-    final prefs = await _prefs;
-    state = state.copyWith(themeMode: mode);
+  Future<void> _update(
+    AppSettings Function(AppSettings current) updater,
+  ) async {
+    final current = await future;
+    state = AsyncData(updater(current));
+  }
 
-    await prefs.setInt(_themeKey, mode.index);
+  Future<void> setTheme(AppThemeModeEnum mode) async {
+    await _update((s) => s.copyWith(themeMode: mode));
+    _prefs.setInt(_themeKey, mode.index);
   }
 
   Future<void> setSortField(SortField sortField) async {
-    final prefs = await _prefs;
-    state = state.copyWith(sortField: sortField);
-
-    await prefs.setInt(_sortFieldKey, sortField.index);
+    await _update((s) => s.copyWith(sortField: sortField));
+    _prefs.setInt(_sortFieldKey, sortField.index);
   }
 
   Future<void> setSortDirection(SortDirection sortDirection) async {
-    final prefs = await _prefs;
-    state = state.copyWith(sortDirection: sortDirection);
-
-    await prefs.setInt(_sortDirectionKey, sortDirection.index);
+    await _update((s) => s.copyWith(sortDirection: sortDirection));
+    _prefs.setInt(_sortDirectionKey, sortDirection.index);
   }
 
-  Future<void> setLastBackup(DateTime date) async {
-    final prefs = await _prefs;
-    state = state.copyWith(lastBackupAt: date);
+  Future<void> setLastBackup({
+    required DateTime date,
+    required String title,
+    required String body,
+  }) async {
+    await _update((s) => s.copyWith(lastBackupAt: date));
+    await _prefs.setInt(_lastBackupKey, date.millisecondsSinceEpoch);
 
-    await prefs.setInt(_lastBackupKey, date.millisecondsSinceEpoch);
-
-    if (state.enableBackupReminder) _reminderService.scheduleIfNeeded(state);
+    final current = await future;
+    if (current.enableBackupReminder) {
+      await _reminderService.rescheduleAfterBackup(
+        date,
+        title: title,
+        body: body,
+      );
+    }
   }
 
   Future<void> setConfirmDelete(bool confirm) async {
-    final prefs = await _prefs;
-    state = state.copyWith(confirmBeforeDelete: confirm);
-
-    await prefs.setBool(_confirmKey, confirm);
+    await _update((s) => s.copyWith(confirmBeforeDelete: confirm));
+    _prefs.setBool(_confirmKey, confirm);
   }
 
-  Future<void> setShowCompleted(bool completed) async {
-    final prefs = await _prefs;
-    state = state.copyWith(showCompletedOnDashboard: completed);
+  Future<void> setBackupReminder(
+    bool reminder, {
+    required String title,
+    required String body,
+  }) async {
+    await _update((s) => s.copyWith(enableBackupReminder: reminder));
+    await _prefs.setBool(_reminderKey, reminder);
 
-    await prefs.setBool(_showCompletedKey, completed);
-  }
-
-  Future<void> setBackupReminder(bool reminder) async {
-    final prefs = await _prefs;
-    state = state.copyWith(enableBackupReminder: reminder);
-
-    await prefs.setBool(_reminderKey, reminder);
-
-    reminder
-        ? _reminderService.scheduleIfNeeded(state)
-        : _reminderService.cancel();
+    final current = await future;
+    if (reminder) {
+      await _reminderService.scheduleFromSettings(
+        current,
+        title: title,
+        body: body,
+      );
+    } else {
+      await _reminderService.cancel();
+    }
   }
 }

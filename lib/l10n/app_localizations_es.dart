@@ -235,4 +235,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String lastBackup(Object date) {
     return 'Último respaldo: $date';
   }
+
+  @override
+  String get titleRequired => 'Introduce un título';
+
+  @override
+  String get backupReminderTitle => 'Es hora de hacer una copia de seguridad';
+
+  @override
+  String get backupReminderBody => 'No olvides guardar tus datos';
+
+  @override
+  String get invalidNumber => 'Número inválido';
 }

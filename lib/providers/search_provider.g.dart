@@ -19,7 +19,7 @@ final class SearchQueryProvider extends $NotifierProvider<SearchQuery, String> {
         argument: null,
         retry: null,
         name: r'searchQueryProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -40,7 +40,7 @@ final class SearchQueryProvider extends $NotifierProvider<SearchQuery, String> {
   }
 }
 
-String _$searchQueryHash() => r'28fd835cc33dcb38ecedad2077724d0f43e2d189';
+String _$searchQueryHash() => r'a312758f5350ae515cc7c9e67804c53f62a8ab62';
 
 abstract class _$SearchQuery extends $Notifier<String> {
   String build();
@@ -72,7 +72,7 @@ final class FilteredWorksProvider
         argument: null,
         retry: null,
         name: r'filteredWorksProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -99,7 +99,7 @@ final class FilteredWorksProvider
   }
 }
 
-String _$filteredWorksHash() => r'1cf9ed76d06cdaf7e933cab8d346b9229b246afe';
+String _$filteredWorksHash() => r'a586ac1d8ac527b0c16739ebaab6510e28c193d9';
 
 @ProviderFor(sortedWorks)
 final sortedWorksProvider = SortedWorksProvider._();
@@ -113,7 +113,7 @@ final class SortedWorksProvider
         argument: null,
         retry: null,
         name: r'sortedWorksProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -140,4 +140,4 @@ final class SortedWorksProvider
   }
 }
 
-String _$sortedWorksHash() => r'3ad659728772eda0f857f01cb6dd26a0639054ec';
+String _$sortedWorksHash() => r'8a92050440035f890fd0f17c4373bb1355b7c326';

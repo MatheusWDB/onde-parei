@@ -4,24 +4,14 @@ import 'package:onde_parei/enums/sort_enum.dart';
 
 part 'sort_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class SortConfig extends _$SortConfig {
   @override
   ({SortField field, SortDirection direction}) build() {
-    final settings = ref.watch(settingsProvider);
-    return (field: settings.sortField, direction: settings.sortDirection);
-  }
-
-  void changeField(SortField field) {
-    state = (field: field, direction: state.direction);
-  }
-
-  void toggleDirection() {
-    state = (
-      field: state.field,
-      direction: state.direction == SortDirection.asc
-          ? SortDirection.desc
-          : SortDirection.asc,
+    final settings = ref.watch(settingsProvider).value;
+    return (
+      field: settings?.sortField ?? SortField.title,
+      direction: settings?.sortDirection ?? SortDirection.asc,
     );
   }
 }

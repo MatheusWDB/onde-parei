@@ -531,6 +531,30 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Último backup: {date}'**
   String lastBackup(Object date);
+
+  /// No description provided for @titleRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe um título'**
+  String get titleRequired;
+
+  /// No description provided for @backupReminderTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Hora de fazer backup'**
+  String get backupReminderTitle;
+
+  /// No description provided for @backupReminderBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não esqueça de salvar seus dados'**
+  String get backupReminderBody;
+
+  /// No description provided for @invalidNumber.
+  ///
+  /// In pt, this message translates to:
+  /// **'Número inválido'**
+  String get invalidNumber;
 }
 
 class _AppLocalizationsDelegate

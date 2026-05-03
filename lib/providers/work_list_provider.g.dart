@@ -9,6 +9,47 @@ part of 'work_list_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
+@ProviderFor(workRepository)
+final workRepositoryProvider = WorkRepositoryProvider._();
+
+final class WorkRepositoryProvider
+    extends $FunctionalProvider<WorkRepository, WorkRepository, WorkRepository>
+    with $Provider<WorkRepository> {
+  WorkRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'workRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$workRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<WorkRepository> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  WorkRepository create(Ref ref) {
+    return workRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(WorkRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<WorkRepository>(value),
+    );
+  }
+}
+
+String _$workRepositoryHash() => r'06f1941f991d9e834fbdaf08622cd8ebbfd34c48';
+
 @ProviderFor(WorkList)
 final workListProvider = WorkListProvider._();
 
@@ -20,7 +61,7 @@ final class WorkListProvider
         argument: null,
         retry: null,
         name: r'workListProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -33,7 +74,7 @@ final class WorkListProvider
   WorkList create() => WorkList();
 }
 
-String _$workListHash() => r'06353d03480742acda3a789b1bef81b7e6b9ae0d';
+String _$workListHash() => r'bed57fb635ecbe680ff3ea8f61233141ad7ffb6e';
 
 abstract class _$WorkList extends $AsyncNotifier<List<Work>> {
   FutureOr<List<Work>> build();

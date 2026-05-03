@@ -8,7 +8,6 @@ import 'package:onde_parei/providers/settings_provider.dart';
 import 'package:onde_parei/screens/home_screen.dart';
 import 'package:onde_parei/theme/app_themes.dart';
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 final FlutterLocalNotificationsPlugin notificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -17,7 +16,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   tz.initializeTimeZones();
-  tz.setLocalLocation(tz.getLocation('America/Sao_Paulo'));
 
   const android = AndroidInitializationSettings('ic_notification_2');
   const settings = InitializationSettings(android: android);
@@ -38,17 +36,26 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final settingsAsync = ref.watch(settingsProvider);
 
-    return MaterialApp(
-      supportedLocales: L10n.all,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      onGenerateTitle: (context) => AppLocalizations.of(context)!.whereDidIStop,
-      debugShowCheckedModeBanner: false,
-      themeMode: settings.themeMode.toThemeMode(),
-      theme: AppThemes.light,
-      darkTheme: AppThemes.dark,
-      home: const HomeScreen(),
+    return settingsAsync.when(
+      loading: () => const MaterialApp(
+        home: Scaffold(body: Center(child: CircularProgressIndicator())),
+      ),
+      error: (e, _) => MaterialApp(
+        home: Scaffold(body: Center(child: Text('Erro ao carregar: $e'))),
+      ),
+      data: (settings) => MaterialApp(
+        supportedLocales: L10n.all,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        onGenerateTitle: (context) =>
+            AppLocalizations.of(context)!.whereDidIStop,
+        debugShowCheckedModeBanner: false,
+        themeMode: settings.themeMode.toThemeMode(),
+        theme: AppThemes.light,
+        darkTheme: AppThemes.dark,
+        home: const HomeScreen(),
+      ),
     );
   }
 }

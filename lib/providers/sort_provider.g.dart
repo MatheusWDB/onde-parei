@@ -24,7 +24,7 @@ final class SortConfigProvider
         argument: null,
         retry: null,
         name: r'sortConfigProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -50,7 +50,7 @@ final class SortConfigProvider
   }
 }
 
-String _$sortConfigHash() => r'350cecd998b22772b958128ecde9f647407124a8';
+String _$sortConfigHash() => r'38793a7b1758c415882091aa6a0b9c77091d3868';
 
 abstract class _$SortConfig
     extends $Notifier<({SortDirection direction, SortField field})> {

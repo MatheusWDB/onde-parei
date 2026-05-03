@@ -5,9 +5,12 @@ import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:onde_parei/enums/app_theme_mode_enum.dart';
 import 'package:onde_parei/l10n/app_localizations.dart';
+import 'package:onde_parei/providers/backup_service_provider.dart';
+import 'package:onde_parei/providers/loading_state_provider.dart';
 import 'package:onde_parei/providers/settings_provider.dart';
 import 'package:onde_parei/providers/work_list_provider.dart';
 import 'package:onde_parei/services/backup_service.dart';
+import 'package:onde_parei/utils/dialogs.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -15,26 +18,17 @@ class SettingsScreen extends ConsumerWidget {
   Future<bool?> _showConfirmImportDialog(
     BuildContext context,
     AppLocalizations t,
-  ) => showDialog<bool>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(t.confirmImport),
-      content: Text(t.confirmImportMessage),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context, false),
-          child: Text(t.cancel),
-        ),
-        ElevatedButton(
-          onPressed: () => Navigator.pop(context, true),
-          child: Text(t.confirm),
-        ),
-      ],
-    ),
+  ) => showConfirmDialog(
+    context,
+    title: t.confirmImport,
+    content: t.confirmImportMessage,
+    cancelLabel: t.cancel,
+    confirmLabel: t.confirm,
   );
 
   void _showBackupActions(
     BuildContext context,
+    WidgetRef ref,
     BackupService backupService,
     AppLocalizations t,
     Settings settingsNotifier,
@@ -50,10 +44,16 @@ class SettingsScreen extends ConsumerWidget {
               leading: const Icon(LucideIcons.folderDown),
               title: Text(t.downloadBackup),
               onTap: () async {
-                Navigator.pop(context);
+                final loadingNotifier = ref.read(loadingStateProvider.notifier);
+                loadingNotifier.setLoading(true);
+
                 try {
                   await backupService.saveBackup();
-                  settingsNotifier.setLastBackup(DateTime.now());
+                  settingsNotifier.setLastBackup(
+                    date: DateTime.now(),
+                    title: t.backupReminderTitle,
+                    body: t.backupReminderBody,
+                  );
 
                   if (!context.mounted) return;
                   AlertInfo.show(
@@ -61,15 +61,18 @@ class SettingsScreen extends ConsumerWidget {
                     text: t.backupDownloaded,
                     typeInfo: TypeInfo.success,
                   );
+
+                  Navigator.pop(context);
                 } catch (e) {
-                  // Cancelamento pelo usuário — não exibe erro
-                  if (e.runtimeType.toString() == '_BackupCancelledException') return;
+                  if (e is BackupCancelledException) return;
                   if (!context.mounted) return;
                   AlertInfo.show(
                     context: context,
                     text: t.backupDownloadError,
                     typeInfo: TypeInfo.error,
                   );
+                } finally {
+                  loadingNotifier.setLoading(false);
                 }
               },
             ),
@@ -77,10 +80,17 @@ class SettingsScreen extends ConsumerWidget {
               leading: const Icon(LucideIcons.share2),
               title: Text(t.share),
               onTap: () async {
-                Navigator.pop(context);
+                final loadingNotifier = ref.read(loadingStateProvider.notifier);
+
                 try {
+                  loadingNotifier.setLoading(true);
+
                   await backupService.shareBackup();
-                  settingsNotifier.setLastBackup(DateTime.now());
+                  settingsNotifier.setLastBackup(
+                    date: DateTime.now(),
+                    title: t.backupReminderTitle,
+                    body: t.backupReminderBody,
+                  );
 
                   if (!context.mounted) return;
                   AlertInfo.show(
@@ -88,14 +98,17 @@ class SettingsScreen extends ConsumerWidget {
                     text: t.backupShared,
                     typeInfo: TypeInfo.success,
                   );
+                  Navigator.pop(context);
                 } catch (e) {
-                  if (e.runtimeType.toString() == '_BackupCancelledException') return;
+                  if (e is BackupCancelledException) return;
                   if (!context.mounted) return;
                   AlertInfo.show(
                     context: context,
                     text: t.backupShareError,
                     typeInfo: TypeInfo.error,
                   );
+                } finally {
+                  loadingNotifier.setLoading(false);
                 }
               },
             ),
@@ -107,7 +120,7 @@ class SettingsScreen extends ConsumerWidget {
 
   void _showImportActions(
     BuildContext context,
-    WorkList listNotifier,
+    WidgetRef ref,
     BackupService backupService,
     AppLocalizations t,
   ) {
@@ -123,7 +136,9 @@ class SettingsScreen extends ConsumerWidget {
               title: Text(t.chooseFile),
               subtitle: Text(t.searchInAnotherFolder),
               onTap: () async {
-                Navigator.pop(context);
+                final loadingNotifier = ref.read(loadingStateProvider.notifier);
+                loadingNotifier.setLoading(true);
+
                 try {
                   final works = await backupService.importBackup();
                   if (works == null) return;
@@ -132,6 +147,7 @@ class SettingsScreen extends ConsumerWidget {
                   final confirm = await _showConfirmImportDialog(context, t);
                   if (confirm != true) return;
 
+                  final listNotifier = ref.read(workListProvider.notifier);
                   listNotifier.replaceAll(works);
 
                   if (!context.mounted) return;
@@ -140,6 +156,7 @@ class SettingsScreen extends ConsumerWidget {
                     text: t.backupImported,
                     typeInfo: TypeInfo.success,
                   );
+                  Navigator.pop(context);
                 } catch (_) {
                   if (!context.mounted) return;
                   AlertInfo.show(
@@ -147,6 +164,8 @@ class SettingsScreen extends ConsumerWidget {
                     text: t.backupImportError,
                     typeInfo: TypeInfo.error,
                   );
+                } finally {
+                  loadingNotifier.setLoading(false);
                 }
               },
             ),
@@ -159,9 +178,10 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context)!;
-    final BackupService backupService = BackupService();
+    final backupService = ref.read(backupServiceProvider);
     final settingsNotifier = ref.read(settingsProvider.notifier);
-    final settings = ref.watch(settingsProvider);
+    final settings = ref.watch(settingsProvider).requireValue;
+    final loading = ref.watch(loadingStateProvider);
 
     String? formattedDate;
     if (settings.lastBackupAt != null) {
@@ -170,118 +190,123 @@ class SettingsScreen extends ConsumerWidget {
       ).add_Hm().format(settings.lastBackupAt!);
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          t.appSettings,
-          style: const TextStyle(fontWeight: FontWeight.w700),
-        ),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              ListTile(
-                dense: true,
-                title: Text(t.appTheme),
-                trailing: DropdownButton<AppThemeModeEnum>(
-                  value: settings.themeMode,
-                  onChanged: (value) {
-                    if (value != null) settingsNotifier.setTheme(value);
-                  },
-                  items: AppThemeModeEnum.values
-                      .map(
-                        (e) => DropdownMenuItem(
-                          value: e,
-                          child: Text(e.displayName(t)),
-                        ),
-                      )
-                      .toList(),
-                ),
-              ),
-              ListTile(
-                dense: true,
-                title: Text(t.showCompletedOnHome),
-                trailing: Switch(
-                  value: settings.showCompletedOnDashboard,
-                  onChanged: settingsNotifier.setShowCompleted,
-                ),
-              ),
-              ListTile(
-                dense: true,
-                title: Text(t.confirmDeletion),
-                trailing: Switch(
-                  value: settings.confirmBeforeDelete,
-                  onChanged: settingsNotifier.setConfirmDelete,
-                ),
-              ),
-              ListTile(
-                dense: true,
-                title: Text(t.backupReminder),
-                subtitle: settings.lastBackupAt == null
-                    ? Text(t.neverDidBackup)
-                    : Text(t.lastBackup(formattedDate!)),
-                trailing: Switch(
-                  value: settings.enableBackupReminder,
-                  onChanged: settingsNotifier.setBackupReminder,
-                ),
-              ),
-              const SizedBox(height: 10.0),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).dividerColor),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                padding: const EdgeInsets.all(18.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 8.0,
-                  children: [
-                    Text(
-                      t.appBackupSecurity,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            title: Text(
+              t.appSettings,
+              style: const TextStyle(fontWeight: FontWeight.w700),
+            ),
+          ),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  ListTile(
+                    dense: true,
+                    title: Text(t.appTheme),
+                    trailing: DropdownButton<AppThemeModeEnum>(
+                      value: settings.themeMode,
+                      onChanged: (value) {
+                        if (value != null) settingsNotifier.setTheme(value);
+                      },
+                      items: AppThemeModeEnum.values
+                          .map(
+                            (e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(e.displayName(t)),
+                            ),
+                          )
+                          .toList(),
                     ),
-                    Text(t.dataSecurityInfo),
-                    Card(
-                      child: Column(
-                        children: [
-                          ListTile(
-                            dense: true,
-                            leading: const Icon(LucideIcons.download),
-                            title: Text(t.downloadBackup),
-                            subtitle: Text(t.backupExport),
-                            onTap: () => _showBackupActions(
-                              context,
-                              backupService,
-                              t,
-                              settingsNotifier,
-                            ),
-                          ),
-                          const Divider(),
-                          ListTile(
-                            dense: true,
-                            leading: const Icon(LucideIcons.upload),
-                            title: Text(t.loadBackup),
-                            subtitle: Text(t.replaceCurrentData),
-                            onTap: () => _showImportActions(
-                              context,
-                              ref.read(workListProvider.notifier),
-                              backupService,
-                              t,
-                            ),
-                          ),
-                        ],
+                  ),
+                  ListTile(
+                    dense: true,
+                    title: Text(t.confirmDeletion),
+                    trailing: Switch(
+                      value: settings.confirmBeforeDelete,
+                      onChanged: settingsNotifier.setConfirmDelete,
+                    ),
+                  ),
+                  ListTile(
+                    dense: true,
+                    title: Text(t.backupReminder),
+                    subtitle: settings.lastBackupAt == null
+                        ? Text(t.neverDidBackup)
+                        : Text(t.lastBackup(formattedDate!)),
+                    trailing: Switch(
+                      value: settings.enableBackupReminder,
+                      onChanged: (value) => settingsNotifier.setBackupReminder(
+                        value,
+                        title: t.backupReminderTitle,
+                        body: t.backupReminderBody,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 10.0),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Theme.of(context).dividerColor),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    padding: const EdgeInsets.all(18.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 8.0,
+                      children: [
+                        Text(
+                          t.appBackupSecurity,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(t.dataSecurityInfo),
+                        Card(
+                          child: Column(
+                            children: [
+                              ListTile(
+                                dense: true,
+                                leading: const Icon(LucideIcons.download),
+                                title: Text(t.downloadBackup),
+                                subtitle: Text(t.backupExport),
+                                onTap: () => _showBackupActions(
+                                  context,
+                                  ref,
+                                  backupService,
+                                  t,
+                                  settingsNotifier,
+                                ),
+                              ),
+                              const Divider(),
+                              ListTile(
+                                dense: true,
+                                leading: const Icon(LucideIcons.upload),
+                                title: Text(t.loadBackup),
+                                subtitle: Text(t.replaceCurrentData),
+                                onTap: () => _showImportActions(
+                                  context,
+                                  ref,
+                                  backupService,
+                                  t,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
+        if (loading) ...[
+          const ModalBarrier(dismissible: false, color: Colors.black45),
+          const Center(child: CircularProgressIndicator()),
+        ],
+      ],
     );
   }
 }

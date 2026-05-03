@@ -9,19 +9,23 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class BackupService {
-  final WorkRepository _repository = WorkRepository();
+  final WorkRepository _repository;
+
+  BackupService({required WorkRepository repository}) : _repository = repository;
 
   static const _backupName = 'onde_parei_backup';
 
+  Future<String> _generateBackupJson() async {
+    final works = await _repository.findAll();
+    return jsonEncode(works.map((w) => w.toJson()).toList());
+  }
+
   Future<File> _generateBackupFile(Directory dir) async {
-    final List<Work> works = await _repository.findAll();
-    final List<String> jsonList = works.map((w) => w.toJson()).toList();
-    final String jsonString = jsonEncode(jsonList);
-
     final now = DateTime.now().toIso8601String().replaceAll(':', '-');
-    final File file = File('${dir.path}/${_backupName}_$now.dat');
-    await file.writeAsString(jsonString);
+    final file = File('${dir.path}/${_backupName}_$now.dat');
+    final jsonString = await _generateBackupJson();
 
+    await file.writeAsString(jsonString);
     return file;
   }
 
@@ -34,7 +38,7 @@ class BackupService {
     );
 
     if (result.status == ShareResultStatus.dismissed) {
-      throw const _BackupCancelledException();
+      throw const BackupCancelledException();
     }
   }
 
@@ -53,14 +57,14 @@ class BackupService {
     );
 
     if (path == null || path.isEmpty) {
-      throw const _BackupCancelledException();
+      throw const BackupCancelledException();
     }
   }
 
   Future<List<Work>?> importBackup() async {
     final FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['dat', 'json'], // json para retrocompatibilidade
+      allowedExtensions: ['dat', 'json'],
     );
 
     if (result == null || result.files.single.path == null) return null;
@@ -73,6 +77,6 @@ class BackupService {
   }
 }
 
-class _BackupCancelledException implements Exception {
-  const _BackupCancelledException();
+class BackupCancelledException implements Exception {
+  const BackupCancelledException();
 }
